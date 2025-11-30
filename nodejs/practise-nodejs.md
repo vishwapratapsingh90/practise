@@ -1,17 +1,23 @@
-// Practise 1
->> npm init
->> npm i express (or npm install express)
->> npm i -save-dev babel cli
->> npm install eslint@5.2.0
->> npm outdated
->> npm remove eslint
->> npm install eslint
-/*
-A scoped module can be called as any npm module which has organization name or user name defined before @ in the package name.
-It can either public or private.
-*/
-// To publish any module below is the command
->> npm publish
+# Practise1
+`npm init`
+
+`npm i express` (or `npm install express`)
+
+`npm i -save-dev babel cli`
+
+`npm install eslint@5.2.0`
+
+`npm outdated`
+
+`npm remove eslint`
+
+`npm install eslint`
+
+#### A scoped module can be called as any npm module which has organization name or user name defined before @ in the package name.
+#### It can either public or private.
+#### To publish any module below is the command
+`npm publish`
+
 // above command is default command to publish private scoped npm package whereas, below is the command for public package
 >> npm publish -access public
 // command to verify the npm cache sanity
