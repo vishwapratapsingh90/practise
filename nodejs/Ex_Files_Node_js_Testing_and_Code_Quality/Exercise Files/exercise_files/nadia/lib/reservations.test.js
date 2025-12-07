@@ -15,6 +15,19 @@ describe('validate', () => {
       .resolves.toEqual(reservation);
   });
 
+  it('should resolve with no optional fields with async', async () => {
+    const reservation = new Reservation({
+      party: 4,
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      date: '2024/08/20',
+      time: '06:00 PM'
+    });
+
+    await expect(reservations.validate(reservation))
+      .resolves.toEqual(reservation);
+  });
+
   it('should reject with invalid email',() => {
     const reservation = new Reservation({
       party: 4,
@@ -28,5 +41,18 @@ describe('validate', () => {
 
     return reservations.validate(reservation)
       .catch(error => {expect(error).toBeInstanceOf(Error);});
+  });
+
+  it('should reject with invalid email with async', async () => {
+    const reservation = new Reservation({
+      party: 4,
+      name: 'John Doe',
+      email: 'john.doe',
+      date: '2024/08/20',
+      time: '06:00 PM'
+    });
+
+    await expect(reservations.validate(reservation))
+      .rejects.toBeInstanceOf(Error);
   });
 });
