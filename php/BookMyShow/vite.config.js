@@ -13,9 +13,14 @@ export default defineConfig({
         react(), // 3. Initialize the react plugin
     ],
     server: {
+        host: '0.0.0.0',
+        hmr: {
+            host: 'localhost',
+        },
         watch: {
             usePolling: true,
-            ignored: ['**/storage/framework/views/**'],
+            interval: 1000,
+            ignored: ['**/storage/framework/views/**', '**/vendor/**', '**/node_modules/**'],
         },
     },
 });

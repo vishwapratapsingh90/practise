@@ -1,77 +1,43 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../ThemeContext';
 
 function Home() {
     const navigate = useNavigate();
+    const theme = useTheme();
+    const t = window.config?.translations?.messages || {};
 
     return (
-        <div style={{
-            minHeight: '100vh',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            color: 'white',
-            textAlign: 'center',
-            padding: '20px'
-        }}>
-            <h1 style={{
-                fontSize: '64px',
-                marginBottom: '20px',
-                fontWeight: 'bold'
-            }}>
-                BookMyShow
+        <div className={`min-h-screen flex flex-col items-center justify-center ${theme.classes.bgPrimary} text-white text-center ${theme.classes.p.md}`}>
+            <h1 className="underline text-6xl mb-5 font-bold">
+                {window.config?.appName || 'React App'}
             </h1>
-            <p style={{
-                fontSize: '24px',
-                marginBottom: '40px',
-                maxWidth: '600px'
-            }}>
-                Welcome to the land of entertainment. Book your favorite movies and events with ease.
+            <p className="text-2xl mb-10 max-w-2xl">
+                {t.welcome_title}. {t.welcome_subtitle}
             </p>
 
             <button
                 onClick={() => navigate('/login')}
-                style={{
-                    padding: '15px 40px',
-                    fontSize: '18px',
-                    backgroundColor: 'white',
-                    color: '#667eea',
-                    border: 'none',
-                    borderRadius: '50px',
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-                    transition: 'transform 0.2s'
-                }}
-                onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                className={theme.classes.btnPrimary}
             >
-                Login / Sign Up
+                {t.login_signup || 'Login / Sign Up'}
             </button>
 
-            <div style={{
-                marginTop: '60px',
-                display: 'flex',
-                gap: '40px',
-                flexWrap: 'wrap',
-                justifyContent: 'center'
-            }}>
-                <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '48px', marginBottom: '10px' }}>🎬</div>
-                    <h3>Movies</h3>
-                    <p style={{ fontSize: '14px', opacity: 0.9 }}>Latest releases</p>
+            <div className={`${theme.classes.mt.xl} flex ${theme.classes.gap.lg} flex-wrap justify-center`}>
+                <div className="text-center">
+                    <div className="text-5xl mb-2.5">🎬</div>
+                    <h3>{t.movies || 'Movies'}</h3>
+                    <p className="text-sm opacity-90">{t.movies_desc || 'Latest releases'}</p>
                 </div>
-                <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '48px', marginBottom: '10px' }}>🎭</div>
-                    <h3>Events</h3>
-                    <p style={{ fontSize: '14px', opacity: 0.9 }}>Live shows</p>
+                <div className="text-center">
+                    <div className="text-5xl mb-2.5">🎭</div>
+                    <h3>{t.events || 'Events'}</h3>
+                    <p className="text-sm opacity-90">{t.events_desc || 'Live shows'}</p>
                 </div>
-                <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '48px', marginBottom: '10px' }}>🎪</div>
-                    <h3>Theater</h3>
-                    <p style={{ fontSize: '14px', opacity: 0.9 }}>Stage plays</p>
+                <div className="text-center">
+                    <div className="text-5xl mb-2.5">🎪</div>
+                    <h3>{t.theater || 'Theater'}</h3>
+                    <p className="text-sm opacity-90">{t.theater_desc || 'Stage plays'}</p>
                 </div>
             </div>
         </div>
