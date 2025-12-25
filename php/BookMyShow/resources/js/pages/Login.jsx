@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../ThemeContext';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const theme = useTheme();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,30 +41,18 @@ function Login() {
     };
 
     return (
-        <div style={{
-            maxWidth: '400px',
-            margin: '50px auto',
-            padding: '20px',
-            border: '1px solid #ddd',
-            borderRadius: '8px'
-        }}>
-            <h2 style={{ textAlign: 'center' }}>Login</h2>
+        <div className={`max-w-md mx-auto my-12 ${theme.classes.p.md} border border-gray-300 rounded-lg ${theme.classes.shadow.md}`}>
+            <h2 className="text-center text-2xl font-bold mb-5">Login</h2>
 
             {error && (
-                <div style={{
-                    padding: '10px',
-                    marginBottom: '15px',
-                    backgroundColor: '#fee',
-                    color: '#c00',
-                    borderRadius: '4px'
-                }}>
+                <div className="p-2.5 mb-4 bg-red-100 text-red-700 rounded">
                     {error}
                 </div>
             )}
 
             <form onSubmit={handleSubmit}>
-                <div style={{ marginBottom: '15px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px' }}>
+                <div className="mb-4">
+                    <label className="block mb-1">
                         Email
                     </label>
                     <input
@@ -70,17 +60,12 @@ function Login() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
-                        style={{
-                            width: '100%',
-                            padding: '8px',
-                            border: '1px solid #ddd',
-                            borderRadius: '4px'
-                        }}
+                        className="w-full p-2 border border-gray-300 rounded"
                     />
                 </div>
 
-                <div style={{ marginBottom: '15px' }}>
-                    <label style={{ display: 'block', marginBottom: '5px' }}>
+                <div className="mb-4">
+                    <label className="block mb-1">
                         Password
                     </label>
                     <input
@@ -88,26 +73,13 @@ function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        style={{
-                            width: '100%',
-                            padding: '8px',
-                            border: '1px solid #ddd',
-                            borderRadius: '4px'
-                        }}
+                        className="w-full p-2 border border-gray-300 rounded"
                     />
                 </div>
 
                 <button
                     type="submit"
-                    style={{
-                        width: '100%',
-                        padding: '10px',
-                        backgroundColor: '#007bff',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                    }}
+                    className="w-full p-2.5 bg-[#667eea] text-white border-0 rounded cursor-pointer hover:bg-[#5568d3] transition-colors"
                 >
                     Login
                 </button>

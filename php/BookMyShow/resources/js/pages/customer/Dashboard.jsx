@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../../ThemeContext';
 
 function Dashboard() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    const theme = useTheme();
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -25,29 +27,16 @@ function Dashboard() {
         navigate('/');
     };
 
-    if (!user) return <div>Loading...</div>;
+    if (!user) return <div className="text-center p-10">Loading...</div>;
 
     return (
-        <div style={{ padding: '20px' }}>
-            <header style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '30px',
-                paddingBottom: '10px',
-                borderBottom: '2px solid #ddd'
-            }}>
-                <h1>My Dashboard</h1>
+        <div className={theme.classes.p.md}>
+            <header className={`${theme.classes.flexBetween} mb-8 pb-2.5 border-b-2 border-gray-300`}>
+                <h1 className="text-3xl font-bold">My Dashboard</h1>
                 <button
                     onClick={handleLogout}
-                    style={{
-                        padding: '8px 16px',
-                        backgroundColor: '#dc3545',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                    }}
+                    className="px-4 py-2 bg-red-600 text-white border-0 rounded cursor-pointer hover:bg-red-700 transition-colors"
+                >
                 >
                     Logout
                 </button>
