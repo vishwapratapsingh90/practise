@@ -4,23 +4,25 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes } from 'react-router-dom';
 import { routes } from './routes.config';
-import Header from './Header';
-import Footer from './Footer';
 import { ThemeProvider } from './ThemeContext';
 
 function App() {
     return (
         <ThemeProvider>
             <BrowserRouter>
-                <Header />
                 <Routes>
                     {routes}
                 </Routes>
-                <Footer />
             </BrowserRouter>
         </ThemeProvider>
     );
 }
 
-const root = ReactDOM.createRoot(document.getElementById('app'));
-root.render(<App />);
+const container = document.getElementById('app');
+
+// This checks if the container already has a React root before creating a new one,
+// preventing the duplicate root error during hot module replacement (HMR).
+if (container && !container._reactRootContainer) {
+    const root = ReactDOM.createRoot(container);
+    root.render(<App />);
+}

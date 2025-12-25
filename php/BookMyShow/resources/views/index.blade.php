@@ -14,6 +14,7 @@
                 'messages' => trans('messages'),
             ],
         ]) !!};
+        window.privilegedRoles = ['admin', 'agent'];
     </script>
     @viteReactRefresh
     @vite('resources/js/app.jsx')
