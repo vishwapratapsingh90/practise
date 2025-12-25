@@ -40,6 +40,16 @@ To bring the docker container up.
 
 `usr1:/BookMyShow$ ./vendor/bin/sail npm run dev`
 
+## Screenshots
+
+### Home Page
+
+![Home Page](./public/images/screenshots/Home.png)
+
+### Login Page
+
+![Login Page](./public/images/screenshots/Login.png)
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
