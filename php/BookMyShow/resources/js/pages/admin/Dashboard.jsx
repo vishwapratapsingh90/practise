@@ -1,29 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../ThemeContext';
+import { validatePrivilegedRole, getAuthenticatedUser, clearAuthData } from '../../utils/authentication';
 
 function Dashboard() {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const theme = useTheme();
+    const t = window.config?.translations?.messages || {};
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        const role = localStorage.getItem('role');
-
-        if (!storedUser || role !== 'admin') {
+        if (!validatePrivilegedRole()) {
             navigate('/login');
             return;
         }
 
-        setUser(JSON.parse(storedUser));
+        setUser(getAuthenticatedUser());
     }, [navigate]);
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        localStorage.removeItem('user');
-        delete window.axios.defaults.headers.common['Authorization'];
+        clearAuthData();
         navigate('/');
     };
 
@@ -33,92 +29,41 @@ function Dashboard() {
         <div className={theme.classes.p.md}>
             <header className={`${theme.classes.flexBetween} mb-8 pb-2.5 border-b-2 border-gray-300`}>
                 <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-                <button
-                    onClick={handleLogout}
-                    className="px-4 py-2 bg-red-600 text-white border-0 rounded cursor-pointer hover:bg-red-700 transition-colors"
-                >
-                >
-                    Logout
-                </button>
             </header>
 
-            <div style={{
-                padding: '20px',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '8px',
-                marginBottom: '20px'
-            }}>
-                <h3>Welcome, {user.name}!</h3>
-                <p>Email: {user.email}</p>
-                <p>Role: Administrator</p>
+            <div className={`${theme.classes.p.md} bg-gray-100 rounded-lg ${theme.classes.mb.md}`}>
+                <h3 className="font-semibold text-lg mb-2">Welcome, {user.name}!</h3>
+                <p className="text-gray-700">Email: {user.email}</p>
+                <p className="text-gray-700">Role: Administrator</p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
-                <div style={{
-                    padding: '20px',
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    borderRadius: '8px',
-                    textAlign: 'center'
-                }}>
-                    <h2>Users</h2>
-                    <p style={{ fontSize: '32px', margin: '10px 0' }}>0</p>
+            <div className={`grid grid-cols-3 ${theme.classes.gap.md}`}>
+                <div className={`${theme.classes.p.md} bg-blue-600 text-white rounded-lg text-center`}>
+                    <h2 className="text-xl font-semibold">Users</h2>
+                    <p className="text-4xl font-bold my-2.5">0</p>
                 </div>
 
-                <div style={{
-                    padding: '20px',
-                    backgroundColor: '#28a745',
-                    color: 'white',
-                    borderRadius: '8px',
-                    textAlign: 'center'
-                }}>
-                    <h2>Bookings</h2>
-                    <p style={{ fontSize: '32px', margin: '10px 0' }}>0</p>
+                <div className={`${theme.classes.p.md} bg-green-600 text-white rounded-lg text-center`}>
+                    <h2 className="text-xl font-semibold">Bookings</h2>
+                    <p className="text-4xl font-bold my-2.5">0</p>
                 </div>
 
-                <div style={{
-                    padding: '20px',
-                    backgroundColor: '#ffc107',
-                    color: 'white',
-                    borderRadius: '8px',
-                    textAlign: 'center'
-                }}>
-                    <h2>Movies</h2>
-                    <p style={{ fontSize: '32px', margin: '10px 0' }}>0</p>
+                <div className={`${theme.classes.p.md} bg-yellow-500 text-white rounded-lg text-center`}>
+                    <h2 className="text-xl font-semibold">Movies</h2>
+                    <p className="text-4xl font-bold my-2.5">0</p>
                 </div>
             </div>
 
-            <div style={{ marginTop: '30px' }}>
-                <h3>Quick Actions</h3>
-                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                    <button style={{
-                        padding: '10px 20px',
-                        backgroundColor: '#007bff',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                    }}>
+            <div className={theme.classes.mt.lg}>
+                <h3 className="text-xl font-semibold mb-2.5">Quick Actions</h3>
+                <div className={`flex ${theme.classes.gap.sm} ${theme.classes.mt.sm}`}>
+                    <button className="px-5 py-2.5 bg-blue-600 text-white border-0 rounded cursor-pointer hover:bg-blue-700 transition-colors">
                         Manage Users
                     </button>
-                    <button style={{
-                        padding: '10px 20px',
-                        backgroundColor: '#28a745',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                    }}>
+                    <button className="px-5 py-2.5 bg-green-600 text-white border-0 rounded cursor-pointer hover:bg-green-700 transition-colors">
                         Manage Movies
                     </button>
-                    <button style={{
-                        padding: '10px 20px',
-                        backgroundColor: '#17a2b8',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                    }}>
+                    <button className="px-5 py-2.5 bg-cyan-600 text-white border-0 rounded cursor-pointer hover:bg-cyan-700 transition-colors">
                         View Bookings
                     </button>
                 </div>

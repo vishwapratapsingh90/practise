@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../ThemeContext';
+import { getAuthenticatedUser, validateAuthentication } from '../utils/authentication';
 
 function Home() {
     const navigate = useNavigate();
@@ -16,12 +17,14 @@ function Home() {
                 {t.welcome_title}. {t.welcome_subtitle}
             </p>
 
-            <button
-                onClick={() => navigate('/login')}
-                className={theme.classes.btnPrimary}
-            >
-                {t.login_signup || 'Login / Sign Up'}
-            </button>
+            {!validateAuthentication() ? (
+                <button
+                    onClick={() => navigate('/login')}
+                    className={theme.classes.btnPrimary}
+                >
+                    {t.login_signup || 'Login / Sign Up'}
+                </button>
+            ) : null}
 
             <div className={`${theme.classes.mt.xl} flex ${theme.classes.gap.lg} flex-wrap justify-center`}>
                 <div className="text-center">

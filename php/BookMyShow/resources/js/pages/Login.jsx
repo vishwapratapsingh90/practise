@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../ThemeContext';
+import { validatePrivilegedRole, getAuthenticatedUser, storeAuthData } from '../utils/authentication';
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -8,13 +9,26 @@ function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const theme = useTheme();
+    const t = window.config?.translations?.messages || {};
+
+    useEffect(() => {
+        let loggedInUser = getAuthenticatedUser();
+        if (loggedInUser && validatePrivilegedRole()) {
+            if (window.privilegedRoles.includes(loggedInUser.role)) {
+                navigate('/admin/dashboard');
+            } else {
+                navigate('/customer/dashboard');
+            }
+        }
+
+    }, [navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
         try {
-            const response = await window.axios.post('/api/login', {
+            const response = await window.axios.post('api/v1/login', {
                 email,
                 password
             });
@@ -22,15 +36,10 @@ function Login() {
             const { token, role, user } = response.data;
 
             // Store authentication data
-            localStorage.setItem('token', token);
-            localStorage.setItem('role', role);
-            localStorage.setItem('user', JSON.stringify(user));
-
-            // Set axios default header
-            window.axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            storeAuthData({ token, role, user });
 
             // Redirect based on role
-            if (role === 'admin') {
+            if (window.privilegedRoles.includes(role)) {
                 navigate('/admin/dashboard');
             } else {
                 navigate('/customer/dashboard');
@@ -81,7 +90,7 @@ function Login() {
                     type="submit"
                     className="w-full p-2.5 bg-[#667eea] text-white border-0 rounded cursor-pointer hover:bg-[#5568d3] transition-colors"
                 >
-                    Login
+                    {t.login || 'Login'}
                 </button>
             </form>
         </div>
