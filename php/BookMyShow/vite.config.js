@@ -14,6 +14,7 @@ export default defineConfig({
     ],
     server: {
         watch: {
+            usePolling: true,
             ignored: ['**/storage/framework/views/**'],
         },
     },
