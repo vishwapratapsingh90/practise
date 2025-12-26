@@ -10,21 +10,10 @@ function Home() {
 
     return (
         <div className={`min-h-screen flex flex-col items-center justify-center ${theme.classes.bgPrimary} text-white text-center ${theme.classes.p.md}`}>
-            <h1 className="underline text-6xl mb-5 font-bold">
-                {window.config?.appName || 'React App'}
-            </h1>
+            <img src="/images/logo.jpg" alt="BookMyShow Logo" className="w-48 h-auto mb-8 rounded-lg" />
             <p className="text-2xl mb-10 max-w-2xl">
                 {t.welcome_title}. {t.welcome_subtitle}
             </p>
-
-            {!validateAuthentication() ? (
-                <button
-                    onClick={() => navigate('/login')}
-                    className={theme.classes.btnPrimary}
-                >
-                    {t.login_signup || 'Login / Sign Up'}
-                </button>
-            ) : null}
 
             <div className={`${theme.classes.mt.xl} flex ${theme.classes.gap.lg} flex-wrap justify-center`}>
                 <div className="text-center">

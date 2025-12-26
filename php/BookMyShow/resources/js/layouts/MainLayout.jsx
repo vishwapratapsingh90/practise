@@ -4,11 +4,13 @@ import Footer from '../Footer';
 
 function MainLayout({ children, pageTitle }) {
     return (
-        <>
+        <div className="flex flex-col min-h-screen">
             <Header pageTitle={pageTitle} />
-            {children}
+            <main className="flex-grow">
+                {children}
+            </main>
             <Footer />
-        </>
+        </div>
     );
 }
 

@@ -50,6 +50,14 @@ To bring the docker container up.
 
 ![Login Page](./public/images/screenshots/Login.png)
 
+### User Registration Page
+
+![Registration Page](./public/images/screenshots/Registration.png)
+
+### Admin Dashboard
+
+![Admin Dashboard Page](./public/images/screenshots/AdminDashboard.png)
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../ThemeContext';
-import { validatePrivilegedRole, getAuthenticatedUser, clearAuthData } from '../../utils/authentication';
+import { validatePrivilegedRole, getAuthenticatedUser } from '../../utils/authentication';
 
 function Dashboard() {
     const [user, setUser] = useState(null);
@@ -17,11 +17,6 @@ function Dashboard() {
 
         setUser(getAuthenticatedUser());
     }, [navigate]);
-
-    const handleLogout = () => {
-        clearAuthData();
-        navigate('/');
-    };
 
     if (!user) return <div className="text-center p-10">Loading...</div>;
 

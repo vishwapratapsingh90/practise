@@ -19,26 +19,12 @@ function Dashboard() {
         setUser(JSON.parse(storedUser));
     }, [navigate]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-        localStorage.removeItem('user');
-        delete window.axios.defaults.headers.common['Authorization'];
-        navigate('/');
-    };
-
     if (!user) return <div className="text-center p-10">Loading...</div>;
 
     return (
         <div className={theme.classes.p.md}>
             <header className={`${theme.classes.flexBetween} mb-8 pb-2.5 border-b-2 border-gray-300`}>
                 <h1 className="text-3xl font-bold">My Dashboard</h1>
-                <button
-                    onClick={handleLogout}
-                    className="px-4 py-2 bg-red-600 text-white border-0 rounded cursor-pointer hover:bg-red-700 transition-colors"
-                >
-                    Logout
-                </button>
             </header>
 
             <div style={{
