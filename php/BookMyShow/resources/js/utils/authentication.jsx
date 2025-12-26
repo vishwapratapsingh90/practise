@@ -1,3 +1,5 @@
+// Provides utility functions for user authentication and role management
+
 /**
  * Validates if a user is authenticated
  * @returns {boolean} - Returns true if user is authenticated, false otherwise
