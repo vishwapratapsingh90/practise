@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -24,14 +25,17 @@ class AuthController extends Controller
             // Create token for the user
             $token = $user->createToken('auth_token')->plainTextToken;
 
+            // Get role name from relationship
+            $roleName = $user->getRoleName();
+
             return response()->json([
                 'token' => $token,
-                'role' => $user->role ?? 'customer',
+                'role' => $roleName,
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => $user->role ?? 'customer',
+                    'role' => $roleName,
                 ],
             ], 200);
         }
@@ -82,17 +86,24 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
+            // Attach role to the user
+            $roleId = Role::where('name', $request->role ?? 'customer')->first()->id;
+            $user->roles()->attach($roleId);
+
             // Create token for the new user
             $token = $user->createToken('auth_token')->plainTextToken;
 
+            // Get role name from relationship
+            $roleName = $user->getRoleName();
+
             return response()->json([
                 'token' => $token,
-                'role' => $user->role ?? 'customer',
+                'role' => $roleName,
                 'user' => [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'role' => $user->role ?? 'customer',
+                    'role' => $roleName,
                 ],
             ], 201);
         } catch (\Exception $e) {
@@ -101,5 +112,48 @@ class AuthController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function authorize(Request $request)
+    {
+        $user = $request->user();
+        $userParam = $request->input('user');
+        $permissionSlug = $request->input('permission');
+
+        // Parse user data if it's JSON string
+        if (is_string($userParam)) {
+            $userParam = json_decode($userParam, true);
+        }
+
+        // Compare id and email
+        if (!$userParam || !isset($userParam['id']) || !isset($userParam['email'])) {
+            return response()->json([
+                'message' => 'Invalid user data provided',
+            ], 400);
+        }
+
+        // Check if authenticated user matches the provided user data
+        if ($user->id != $userParam['id'] || $user->email != $userParam['email']) {
+            return response()->json([
+                'message' => 'User authentication mismatch',
+                'authenticated' => false,
+            ], 403);
+        }
+
+        // User data matches, proceed with permission check if needed
+        if ($permissionSlug) {
+            if ($user->hasPermission($permissionSlug)) {
+                return response()->json([
+                    'message' => 'User authenticated with required permission',
+                    'authenticated' => true,
+                ], 200);
+            }
+        }
+
+        // if permission check failed or by default, behavior will be blocking.
+        return response()->json([
+                    'message' => 'User lacks required permission',
+                    'authenticated' => false,
+        ], 403);
     }
 }

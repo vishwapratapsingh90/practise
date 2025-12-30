@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useTheme } from '../ThemeContext';
 import { validatePrivilegedRole, getAuthenticatedUser, storeAuthData } from '../utils/authentication';
 
@@ -8,7 +8,9 @@ function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [errorField, setErrorField] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
     const theme = useTheme();
     const t = window.config?.translations?.messages || {};
 
@@ -25,7 +27,14 @@ function Login() {
             }
         }
 
-    }, [navigate]);
+        // Check for success message from registration
+        if (location.state?.successMessage) {
+            setSuccessMessage(location.state.successMessage);
+            // Clear the state to prevent message from showing on page refresh
+            window.history.replaceState({}, document.title);
+        }
+
+    }, [navigate, location]);
 
     const validateForm = () => {
         // Email validation: required|email
@@ -96,6 +105,12 @@ function Login() {
     return (
         <div className={`max-w-md mx-auto my-12 ${theme.classes.p.md} border border-gray-300 rounded-lg ${theme.classes.shadow.md}`}>
             <h2 className="text-center text-2xl font-bold mb-5">Login</h2>
+
+            {successMessage && (
+                <div className="p-2.5 mb-4 bg-green-100 text-green-700 rounded">
+                    {successMessage}
+                </div>
+            )}
 
             {error && (
                 <div className="p-2.5 mb-4 bg-red-100 text-red-700 rounded">

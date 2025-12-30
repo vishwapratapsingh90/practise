@@ -4,6 +4,7 @@ import { useTheme } from '../../ThemeContext';
 import { validatePrivilegedRole, getAuthenticatedUser } from '../../utils/authentication';
 
 function Dashboard() {
+    const permission = 'admin-dashboard-access'; // permission-slug for accessing admin dashboard
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const theme = useTheme();

@@ -19,7 +19,7 @@ export const validatePrivilegedRole = () => {
 
     if (!storedUser) return false;
 
-    return window.privilegedRoles?.includes(role) || window.privilegedRoles.includes(role);
+    return window.privilegedRoles?.includes(role);
 };
 
 /**
