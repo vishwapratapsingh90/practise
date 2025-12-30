@@ -58,6 +58,10 @@ To bring the docker container up.
 
 ![Admin Dashboard Page](./public/images/screenshots/AdminDashboard.png)
 
+## API Document
+
+[Swagger YAML](./public/BookMyShow.swagger.yaml)
+
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

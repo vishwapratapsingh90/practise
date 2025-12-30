@@ -1,0 +1,155 @@
+info:
+  title: Default module
+  description: ''
+  version: 1.0.0
+tags: []
+paths:
+  /api/v1/register:
+    post:
+      summary: User Registration
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: name
+          in: formData
+          type: string
+        - name: email
+          in: formData
+          type: string
+        - name: password
+          in: formData
+          type: string
+        - name: password_confirmation
+          in: formData
+          type: string
+      responses:
+        '200':
+          description: ''
+          examples:
+            application/json:
+              token: 8|tM0QKeg49VLhlUSdHpzIJipEfIQeEcdPI1LEsNYea19c98af
+              role: customer
+              user:
+                id: 5
+                name: John Doe
+                email: john.doe@example.com
+                role: customer
+          schema:
+            type: object
+            properties: {}
+      security: []
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+  /api/v1/login:
+    post:
+      summary: User Login
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/javascript
+        - name: email
+          in: formData
+          type: string
+        - name: password
+          in: formData
+          type: string
+      responses:
+        '200':
+          description: ''
+          examples:
+            application/json:
+              token: 18|TDvzav5ivmMOPmWczB8F6k5axyJlTa3NgRPOz2tc70001b18
+              role: admin
+              user:
+                id: 1
+                name: Admin User
+                email: admin@example.com
+                role: admin
+          schema:
+            type: object
+            properties: {}
+      security: []
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+  /api/v1/authorize:
+    post:
+      summary: Access Authorization
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: Bearer 18|TDvzav5ivmMOPmWczB8F6k5axyJlTa3NgRPOz2tc70001b18
+        - required: true
+          name: body
+          in: body
+          schema:
+            type: object
+            properties: {}
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          examples:
+            application/json:
+              message: User authenticated with required permission
+              authenticated: true
+          schema:
+            type: object
+            properties: {}
+      security: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+security: []
+swagger: '2.0'
+definitions: {}
+securityDefinitions: {}
+x-components:
+  responses: {}
