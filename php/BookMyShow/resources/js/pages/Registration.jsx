@@ -123,7 +123,7 @@ function Registration() {
                 const { token, role, user } = response.data;
 
                 if (response.status === 201 && user) {
-                    navigate('/login');
+                    navigate('/login', { state: { successMessage: 'Registration successful, please login.' } });
                 }
 
 

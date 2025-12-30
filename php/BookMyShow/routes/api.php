@@ -10,6 +10,7 @@ Route::prefix('v1')->group(function () {
 
     // Protected routes
     Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/authorize', [AuthController::class, 'authorize']);
         Route::post('/logout', [AuthController::class, 'logout']);
     });
 });

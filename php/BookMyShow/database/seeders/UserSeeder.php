@@ -18,24 +18,28 @@ class UserSeeder extends Seeder
                 'name' => 'Admin User',
                 'email' => 'admin@example.com',
                 'password' => bcrypt('password'),
-                'role' => 'admin',
+                'role_id' => 1,
             ],
             [
                 'name' => 'Agent User',
                 'email' => 'agent@example.com',
                 'password' => bcrypt('password'),
-                'role' => 'agent',
+                'role_id' => 2,
             ],
             [
                 'name' => 'Customer User',
                 'email' => 'customer@example.com',
                 'password' => bcrypt('password'),
-                'role' => 'customer',
+                'role_id' => 3,
             ],
         ];
 
-        foreach ($data as $user) {
-            User::create($user);
+        foreach ($data as $userData) {
+            $roleId = $userData['role_id'];
+            unset($userData['role_id']);
+
+            $user = User::create($userData);
+            $user->roles()->attach($roleId);
         }
     }
 }

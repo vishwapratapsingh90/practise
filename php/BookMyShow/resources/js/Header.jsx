@@ -25,9 +25,17 @@ function Header({ pageTitle }) {
         }
     }
 
-    const handleLogout = () => {
-        clearAuthData();
-        navigate('/');
+    const handleLogout = async() => {
+        const response = await window.axios.post(`${window.config?.appUrl || ''}/api/v1/logout`, {}, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (response.status === 200) {
+            clearAuthData();
+            navigate('/');
+        }
     };
 
     return (

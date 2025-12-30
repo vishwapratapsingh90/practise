@@ -22,7 +22,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
     ];
 
     /**
@@ -46,5 +45,37 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the roles for the user.
+     */
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
+    }
+
+    /**
+     * Get the user's primary role name.
+     */
+    public function getRoleName()
+    {
+        return $this->roles()->first()?->name ?? 'customer';
+    }
+
+    /**
+     * Get all permissions for the user.
+     */
+    public function permissions()
+    {
+        return $this->roles()->with('permissions')->get()->pluck('permissions')->flatten()->pluck('slug')->unique();
+    }
+
+    /**
+     * Check if the user has a specific permission.
+     */
+    public function hasPermission($permissionName)
+    {
+        return $this->permissions()->contains($permissionName);
     }
 }
