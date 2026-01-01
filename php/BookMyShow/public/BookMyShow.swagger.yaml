@@ -100,6 +100,39 @@ paths:
         - multipart/form-data
       produces:
         - application/json
+  /api/v1/logout:
+    post:
+      summary: User Logout
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: >-
+            Bearer
+            bf3747c801384e6ad18a9e8732b5bc9eb8d361758a551f5ee0b9c3a58b7efb5e
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+      responses:
+        '200':
+          description: ''
+          examples:
+            application/json:
+              message: Unauthenticated.
+          schema:
+            type: object
+            properties: {}
+      security: []
+      produces:
+        - application/json
   /api/v1/authorize:
     post:
       summary: Access Authorization
