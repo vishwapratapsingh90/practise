@@ -129,6 +129,7 @@ class AuthController extends Controller
         if (!$userParam || !isset($userParam['id']) || !isset($userParam['email'])) {
             return response()->json([
                 'message' => 'Invalid user data provided',
+                'isAuthorized' => false,
             ], 400);
         }
 
@@ -136,7 +137,7 @@ class AuthController extends Controller
         if ($user->id != $userParam['id'] || $user->email != $userParam['email']) {
             return response()->json([
                 'message' => 'User authentication mismatch',
-                'authenticated' => false,
+                'isAuthorized' => false,
             ], 403);
         }
 
@@ -145,7 +146,7 @@ class AuthController extends Controller
             if ($user->hasPermission($permissionSlug)) {
                 return response()->json([
                     'message' => 'User authenticated with required permission',
-                    'authenticated' => true,
+                    'isAuthorized' => true,
                 ], 200);
             }
         }
@@ -153,7 +154,7 @@ class AuthController extends Controller
         // if permission check failed or by default, behavior will be blocking.
         return response()->json([
                     'message' => 'User lacks required permission',
-                    'authenticated' => false,
+                    'isAuthorized' => false,
         ], 403);
     }
 }

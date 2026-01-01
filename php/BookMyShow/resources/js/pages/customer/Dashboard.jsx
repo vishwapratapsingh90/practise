@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../ThemeContext';
+import { getAuthenticatedUser, clearAuthData } from '../../utils/authentication';
+import { validateAuthorization } from '../../utils/authorization';
 
 function Dashboard() {
     const [user, setUser] = useState(null);
@@ -8,15 +10,31 @@ function Dashboard() {
     const theme = useTheme();
 
     useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        const role = localStorage.getItem('role');
+        const checkAuthorization = async () => {
+            const permission = 'customer-dashboard-access'; // permission-slug for accessing customer dashboard
 
-        if (!storedUser || role !== 'customer') {
-            navigate('/login');
-            return;
-        }
+            let isAuthorizedResponse = await validateAuthorization(permission);
+            if (isAuthorizedResponse?.isAuthorized === false) {
+                // Call logout API to invalidate token on server
+                try {
+                    await window.axios.post('/api/v1/logout', {}, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                } catch (error) {
+                    console.error('Logout API call failed:', error);
+                }
 
-        setUser(JSON.parse(storedUser));
+                clearAuthData();
+                navigate('/login');
+                return;
+            }
+
+            setUser(getAuthenticatedUser());
+        };
+
+        checkAuthorization();
     }, [navigate]);
 
     if (!user) return <div className="text-center p-10">Loading...</div>;

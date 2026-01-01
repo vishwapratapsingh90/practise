@@ -26,7 +26,7 @@ function Header({ pageTitle }) {
     }
 
     const handleLogout = async() => {
-        const response = await window.axios.post(`${window.config?.appUrl || ''}/api/v1/logout`, {}, {
+        const response = await window.axios.post('/api/v1/logout', {}, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`
             }
@@ -92,7 +92,7 @@ function Header({ pageTitle }) {
                                     { t.dashboard || 'Dashboard' }
                                 </button>
 
-                                <button
+                                <button id="logout-button"
                                     onClick={() => {
                                         setShowDropdown(false);
                                         handleLogout();
