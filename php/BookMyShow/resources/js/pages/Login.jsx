@@ -81,7 +81,7 @@ function Login() {
         }
 
         try {
-            const response = await window.axios.post('api/v1/login', {
+            const response = await window.axios.post('/api/v1/login', {
                 email,
                 password
             });

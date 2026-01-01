@@ -1,22 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../ThemeContext';
-import { validatePrivilegedRole, getAuthenticatedUser } from '../../utils/authentication';
+import { getAuthenticatedUser } from '../../utils/authentication';
+import { validateAuthorization } from '../../utils/authorization';
 
 function Dashboard() {
-    const permission = 'admin-dashboard-access'; // permission-slug for accessing admin dashboard
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
     const theme = useTheme();
     const t = window.config?.translations?.messages || {};
 
     useEffect(() => {
-        if (!validatePrivilegedRole()) {
-            navigate('/login');
-            return;
-        }
+        const checkAuthorization = async () => {
+            const permission = 'admin-dashboard-access'; // permission-slug for accessing admin dashboard
 
-        setUser(getAuthenticatedUser());
+            let isAuthorizedResponse = await validateAuthorization(permission);
+            if (isAuthorizedResponse?.isAuthorized === false) {
+                // Call logout API to invalidate token on server
+                try {
+                    await window.axios.post('/api/v1/logout', {}, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.getItem('token')}`
+                        }
+                    });
+                } catch (error) {
+                    console.error('Logout API call failed:', error);
+                }
+
+                clearAuthData();
+                navigate('/login');
+                return;
+            }
+
+            setUser(getAuthenticatedUser());
+        };
+
+        checkAuthorization();
     }, [navigate]);
 
     if (!user) return <div className="text-center p-10">Loading...</div>;

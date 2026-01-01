@@ -113,7 +113,7 @@ function Registration() {
             }
 
             try {
-                const response = await window.axios.post('api/v1/register', {
+                const response = await window.axios.post('/api/v1/register', {
                     name: fullname,
                     email,
                     password,
