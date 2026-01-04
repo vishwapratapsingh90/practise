@@ -44,7 +44,7 @@ class AuthController extends Controller
                     'email' => $user->email,
                     'role' => $roleName,
                 ],
-                'permissions' => User::find($user->id)->permissions()->get()->toArray(),
+                'permissions' => User::find($user->id)->permissions()->toArray(),
             ], 'Login successful');
         }
 

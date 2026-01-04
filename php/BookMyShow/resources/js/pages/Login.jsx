@@ -86,9 +86,7 @@ function Login() {
                 password
             });
 
-            const { token, role, user } = response.data;
-
-            const permissions = response.data.permissions || [];
+            const { token, role, user, permissions } = response.data.data;
 
             // Store authentication data
             storeAuthData({ token, role, user, permissions });
