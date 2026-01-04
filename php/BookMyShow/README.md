@@ -58,6 +58,10 @@ To bring the docker container up.
 
 ![Admin Dashboard Page](./public/images/screenshots/AdminDashboard.png)
 
+### Manage Roles
+
+![Manage Roles](./public/images/screenshots/ManageRoles.png)
+
 ## API Document
 
 [Swagger YAML](./public/BookMyShow.swagger.yaml)

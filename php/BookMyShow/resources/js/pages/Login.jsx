@@ -86,10 +86,10 @@ function Login() {
                 password
             });
 
-            const { token, role, user } = response.data;
+            const { token, role, user, permissions } = response.data.data;
 
             // Store authentication data
-            storeAuthData({ token, role, user });
+            storeAuthData({ token, role, user, permissions });
 
             // Redirect based on role
             if (window.privilegedRoles.includes(role)) {

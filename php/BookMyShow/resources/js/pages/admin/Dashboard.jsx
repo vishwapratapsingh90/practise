@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../ThemeContext';
-import { getAuthenticatedUser } from '../../utils/authentication';
-import { validateAuthorization } from '../../utils/authorization';
+import { getAuthenticatedUser, clearAuthData } from '../../utils/authentication';
+import { validateSessionPermission } from '../../utils/authorization';
 
 function Dashboard() {
     const [user, setUser] = useState(null);
@@ -14,7 +14,7 @@ function Dashboard() {
         const checkAuthorization = async () => {
             const permission = 'admin-dashboard-access'; // permission-slug for accessing admin dashboard
 
-            let isAuthorizedResponse = await validateAuthorization(permission);
+            let isAuthorizedResponse = validateSessionPermission(permission);
             if (isAuthorizedResponse?.isAuthorized === false) {
                 // Call logout API to invalidate token on server
                 try {

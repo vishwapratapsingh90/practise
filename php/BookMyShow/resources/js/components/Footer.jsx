@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from './ThemeContext';
+import { useTheme } from '../ThemeContext';
 
 function Footer() {
     const theme = useTheme();

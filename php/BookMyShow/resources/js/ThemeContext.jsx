@@ -1,5 +1,6 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { theme } from './theme';
+import { initFlowbite } from 'flowbite';
 
 const ThemeContext = createContext(theme);
 
@@ -12,6 +13,11 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
+    useEffect(() => {
+        // Initialize Flowbite components (modals, dropdowns, etc.)
+        initFlowbite();
+    }, []);
+
     return (
         <ThemeContext.Provider value={theme}>
             {children}
