@@ -83,15 +83,18 @@ paths:
       responses:
         '200':
           description: ''
+          headers: {}
           examples:
             application/json:
-              token: 18|TDvzav5ivmMOPmWczB8F6k5axyJlTa3NgRPOz2tc70001b18
+              token: 30|aS00QV2fhPUGwUF21YhWxz8zMyigq5vGU75Pd4usaa7bba80
               role: admin
               user:
                 id: 1
                 name: Admin User
                 email: admin@example.com
                 role: admin
+              permissions:
+                - admin-dashboard-access
           schema:
             type: object
             properties: {}
@@ -112,9 +115,7 @@ paths:
           description: ''
           required: false
           type: string
-          x-example: >-
-            Bearer
-            bf3747c801384e6ad18a9e8732b5bc9eb8d361758a551f5ee0b9c3a58b7efb5e
+          x-example: Bearer 28|c1pevwGvITSidJBsC5Xj0E8LreKUwDGcM0iRjtMT9699a1ce
         - name: Accept
           in: header
           description: ''
@@ -124,6 +125,7 @@ paths:
       responses:
         '200':
           description: ''
+          headers: {}
           examples:
             application/json:
               message: Unauthenticated.
@@ -178,6 +180,38 @@ paths:
       security: []
       consumes:
         - application/json
+      produces:
+        - application/json
+  /api/v1/user-permissions:
+    get:
+      summary: User Permissions
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: Bearer 29|4Iuqql6gWFn28tSaGOBaJ1FgeHqo0DO77VENDNgtb4f7c781
+      responses:
+        '200':
+          description: ''
+          examples:
+            application/json:
+              permissions:
+                - admin-dashboard-access
+          schema:
+            type: object
+            properties: {}
+      security: []
       produces:
         - application/json
 security: []

@@ -60,11 +60,13 @@ export const validateUserRole = (requiredRoles = []) => {
  * @param {string} authData.token - Authentication token
  * @param {string} authData.role - User role
  * @param {Object} authData.user - User object
+ * @param {Array} authData.permissions - User permissions
  */
-export const storeAuthData = ({ token, role, user }) => {
+export const storeAuthData = ({ token, role, user, permissions }) => {
     localStorage.setItem('token', token);
     localStorage.setItem('role', role);
     localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('permissions', JSON.stringify(permissions));
 
     // Set axios default header
     window.axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -77,6 +79,7 @@ export const clearAuthData = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
     localStorage.removeItem('user');
+    localStorage.removeItem('permissions');
 
     // Remove axios authorization header
     delete window.axios.defaults.headers.common['Authorization'];
