@@ -172,8 +172,9 @@ paths:
           headers: {}
           examples:
             application/json:
+              data:
+                isAuthorized: true
               message: User authenticated with required permission
-              authenticated: true
           schema:
             type: object
             properties: {}
@@ -204,10 +205,97 @@ paths:
       responses:
         '200':
           description: ''
+          headers: {}
           examples:
             application/json:
-              permissions:
-                - admin-dashboard-access
+              data:
+                - id: 12
+                  slug: admin-dashboard-access
+                  description: Access to admin dashboard
+                  created_at: '2025-12-30T10:31:30.000000Z'
+                  updated_at: '2025-12-30T10:31:30.000000Z'
+                  pivot:
+                    role_id: 1
+                    permission_id: 12
+              links:
+                first: http://127.0.0.1/api/v1/user-permissions?page=1
+                last: http://127.0.0.1/api/v1/user-permissions?page=1
+                prev: null
+                next: null
+                self: http://127.0.0.1/api/v1/user-permissions?page=1
+              meta:
+                current_page: 1
+                from: 1
+                to: 1
+                per_page: 15
+                total: 1
+                last_page: 1
+                path: http://127.0.0.1/api/v1/user-permissions
+              message: Permissions retrieved successfully
+          schema:
+            type: object
+            properties: {}
+      security: []
+      produces:
+        - application/json
+  /api/v1/roles:
+    get:
+      summary: Fetch Roles
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: Bearer 32|w6d4i7F1PvgEeLJRs0jru7KjP76D5Fie5fdMlMpEac920af2
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+      responses:
+        '200':
+          description: ''
+          examples:
+            application/json:
+              data:
+                - id: 1
+                  name: admin
+                  created_at: '2025-12-29T19:48:29.000000Z'
+                  updated_at: '2025-12-29T19:48:29.000000Z'
+                - id: 2
+                  name: agent
+                  created_at: '2025-12-29T19:48:29.000000Z'
+                  updated_at: '2025-12-29T19:48:29.000000Z'
+                - id: 3
+                  name: customer
+                  created_at: '2025-12-29T19:48:29.000000Z'
+                  updated_at: '2025-12-29T19:48:29.000000Z'
+              links:
+                first: http://127.0.0.1/api/v1/roles?page=1
+                last: http://127.0.0.1/api/v1/roles?page=1
+                prev: null
+                next: null
+                self: http://127.0.0.1/api/v1/roles?page=1
+              meta:
+                current_page: 1
+                from: 1
+                to: 3
+                per_page: 15
+                total: 3
+                last_page: 1
+                path: http://127.0.0.1/api/v1/roles
+              message: Roles retrieved successfully
           schema:
             type: object
             properties: {}
