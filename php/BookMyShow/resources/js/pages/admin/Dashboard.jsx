@@ -15,7 +15,7 @@ function Dashboard() {
             const permission = 'admin-dashboard-access'; // permission-slug for accessing admin dashboard
 
             let isAuthorizedResponse = validateSessionPermission(permission);
-            if (isAuthorizedResponse?.isAuthorized === false) {
+            if (isAuthorizedResponse === false) {
                 // Call logout API to invalidate token on server
                 try {
                     await window.axios.post('/api/v1/logout', {}, {

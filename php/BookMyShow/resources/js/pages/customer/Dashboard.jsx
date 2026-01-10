@@ -14,7 +14,7 @@ function Dashboard() {
             const permission = 'customer-dashboard-access'; // permission-slug for accessing customer dashboard
 
             let isAuthorizedResponse = await validateAuthorization(permission);
-            if (isAuthorizedResponse?.isAuthorized === false) {
+            if (isAuthorizedResponse === false) {
                 // Call logout API to invalidate token on server
                 try {
                     await window.axios.post('/api/v1/logout', {}, {
