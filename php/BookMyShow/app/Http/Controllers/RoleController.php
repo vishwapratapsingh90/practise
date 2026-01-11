@@ -17,15 +17,38 @@ class RoleController extends Controller
      */
     public function getRoles(Request $request)
     {
-        $perPage = $request->input('per_page', 15);
+        $message = 'Roles retrieved successfully';
 
-        if ($perPage == 0) {
-            $roles = Role::all();
-            return $this->successResponse($roles, 'Roles retrieved successfully');
+        // Validate inputs
+        $validated = $request->validate([
+            'per_page' => 'integer|min:0|max:100',
+            'page' => 'nullable|integer|min:1',
+            'search' => 'nullable|string|min:1',
+            'sort_by' => 'nullable|string|in:name,created_at,updated_at',
+            'sort_order' => 'nullable|string|in:asc,desc',
+        ]);
+
+        $perPage = $validated['per_page'] ?? 10;
+        $page = $validated['page'] ?? 1;
+        $keyword = $validated['search'] ?? null;
+        $sortBy = $validated['sort_by'] ?? 'created_at';
+        $sortOrder = $validated['sort_order'] ?? 'desc';
+
+        // Build query once
+        $query = Role::query()
+            ->when($keyword, fn($q) => $q->where('name', 'like', "%{$keyword}%"))
+            ->orderBy($sortBy, $sortOrder);
+
+        // Return all records or paginated
+        if ($perPage === 0) {
+            $roles = $query->get();
+            return $this->successResponse($roles, $message);
         }
 
-        $roles = Role::paginate($perPage);
-        return $this->paginatedResponse($roles, 'Roles retrieved successfully');
+        // Laravel automatically handles page parameter from query string
+        $roles = $query->paginate($perPage, ['*'], 'page', $page);
+
+        return $this->paginatedResponse($roles, $message);
     }
 
     /**

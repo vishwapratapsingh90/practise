@@ -240,17 +240,47 @@ paths:
         - application/json
   /api/v1/roles:
     get:
-      summary: Fetch Roles
+      summary: Fetch Roles - Paginated
       deprecated: false
       description: ''
       tags: []
       parameters:
+        - name: per_page
+          in: query
+          description: ''
+          required: false
+          type: integer
+          x-example: 10
+        - name: page
+          in: query
+          description: ''
+          required: false
+          type: integer
+          x-example: 1
+        - name: search
+          in: query
+          description: ''
+          required: false
+          type: string
+          x-example: a
+        - name: sort_by
+          in: query
+          description: ''
+          required: false
+          type: string
+          x-example: name
+        - name: sort_order
+          in: query
+          description: ''
+          required: false
+          type: string
+          x-example: desc
         - name: Authorization
           in: header
           description: ''
           required: false
           type: string
-          x-example: Bearer 32|w6d4i7F1PvgEeLJRs0jru7KjP76D5Fie5fdMlMpEac920af2
+          x-example: Bearer 39|2gc5nLJNwEZUu1CLIa3URFEV3p6Mj5JNei612UHO66633832
         - name: Accept
           in: header
           description: ''
@@ -266,19 +296,16 @@ paths:
       responses:
         '200':
           description: ''
+          headers: {}
           examples:
             application/json:
               data:
-                - id: 1
-                  name: admin
-                  created_at: '2025-12-29T19:48:29.000000Z'
-                  updated_at: '2025-12-29T19:48:29.000000Z'
                 - id: 2
                   name: agent
                   created_at: '2025-12-29T19:48:29.000000Z'
                   updated_at: '2025-12-29T19:48:29.000000Z'
-                - id: 3
-                  name: customer
+                - id: 1
+                  name: admin
                   created_at: '2025-12-29T19:48:29.000000Z'
                   updated_at: '2025-12-29T19:48:29.000000Z'
               links:
@@ -290,12 +317,120 @@ paths:
               meta:
                 current_page: 1
                 from: 1
-                to: 3
-                per_page: 15
-                total: 3
+                to: 2
+                per_page: 10
+                total: 2
                 last_page: 1
                 path: http://127.0.0.1/api/v1/roles
               message: Roles retrieved successfully
+          schema:
+            type: object
+            properties: {}
+      security: []
+      produces:
+        - application/json
+  /api/v1/permissions:
+    get:
+      summary: Fetch Permissions - Paginated
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: per_page
+          in: query
+          description: ''
+          required: false
+          type: integer
+          x-example: 10
+        - name: page
+          in: query
+          description: ''
+          required: false
+          type: integer
+          x-example: 1
+        - name: search
+          in: query
+          description: ''
+          required: false
+          type: string
+          x-example: a
+        - name: sort_by
+          in: query
+          description: ''
+          required: false
+          type: string
+          x-example: slug
+        - name: sort_order
+          in: query
+          description: ''
+          required: false
+          type: string
+          x-example: desc
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: Bearer 39|2gc5nLJNwEZUu1CLIa3URFEV3p6Mj5JNei612UHO66633832
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          examples:
+            application/json:
+              data:
+                - id: 11
+                  slug: update-permission
+                  description: Assign or revoke permission to role
+                  created_at: '2025-12-30T10:31:30.000000Z'
+                  updated_at: '2025-12-30T10:31:30.000000Z'
+                - id: 13
+                  slug: customer-dashboard-access
+                  description: Access to customer dashboard
+                  created_at: '2025-12-30T10:31:30.000000Z'
+                  updated_at: '2025-12-30T10:31:30.000000Z'
+                - id: 12
+                  slug: admin-dashboard-access
+                  description: Access to admin dashboard
+                  created_at: '2025-12-30T10:31:30.000000Z'
+                  updated_at: '2025-12-30T10:31:30.000000Z'
+                - id: 2
+                  slug: add-role
+                  description: Add a new role
+                  created_at: '2025-12-30T10:31:30.000000Z'
+                  updated_at: '2025-12-30T10:31:30.000000Z'
+                - id: 7
+                  slug: add-permission
+                  description: Add a new permission
+                  created_at: '2025-12-30T10:31:30.000000Z'
+                  updated_at: '2025-12-30T10:31:30.000000Z'
+              links:
+                first: http://127.0.0.1/api/v1/permissions?page=1
+                last: http://127.0.0.1/api/v1/permissions?page=1
+                prev: null
+                next: null
+                self: http://127.0.0.1/api/v1/permissions?page=1
+              meta:
+                current_page: 1
+                from: 1
+                to: 5
+                per_page: 10
+                total: 5
+                last_page: 1
+                path: http://127.0.0.1/api/v1/permissions
+              message: Permissions retrieved successfully
           schema:
             type: object
             properties: {}

@@ -1,0 +1,15 @@
+# Kubernetes secrets - DO NOT COMMIT
+secrets.yaml
+
+# Environment-specific configurations
+*.local.yaml
+*.dev.yaml
+*.prod.yaml
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+*.tmp
+*.temp

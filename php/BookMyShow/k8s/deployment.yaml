@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookmyshow-app
+  labels:
+    app: bookmyshow
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bookmyshow
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: bookmyshow
+        tier: frontend
+    spec:
+      initContainers:
+      - name: init-permissions
+        image: sail-8.5/app:latest
+        imagePullPolicy: Never
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p /var/www/html/storage/framework/cache /var/www/html/storage/framework/sessions /var/www/html/storage/framework/views /var/www/html/storage/logs /var/www/html/bootstrap/cache
+          chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache || true
+          chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache || true
+        volumeMounts:
+        - name: app-storage
+          mountPath: /var/www/html/storage
+        - name: app-cache
+          mountPath: /var/www/html/bootstrap/cache
+      containers:
+      - name: app
+        image: sail-8.5/app:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        - name: APP_NAME
+          value: "BookMyShow"
+        - name: APP_ENV
+          value: "local"
+        - name: APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secret
+              key: app-key
+        - name: APP_DEBUG
+          value: "true"
+        - name: APP_URL
+          value: "http://localhost:30080"
+        - name: LOG_CHANNEL
+          value: "stack"
+        - name: DB_CONNECTION
+          value: "mysql"
+        - name: DB_HOST
+          value: "mysql-service"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_DATABASE
+          value: "bookmyshow"
+        - name: DB_USERNAME
+          value: "sail"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: password
+        - name: CACHE_DRIVER
+          value: "redis"
+        - name: QUEUE_CONNECTION
+          value: "redis"
+        - name: SESSION_DRIVER
+          value: "redis"
+        - name: REDIS_HOST
+          value: "redis-service"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_PASSWORD
+          value: "null"
+        - name: MAIL_MAILER
+          value: "smtp"
+        - name: MAIL_HOST
+          value: "mailhog"
+        - name: MAIL_PORT
+          value: "1025"
+        volumeMounts:
+        - name: app-storage
+          mountPath: /var/www/html/storage
+        - name: app-cache
+          mountPath: /var/www/html/bootstrap/cache
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        # Temporarily disabled for debugging
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 80
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 10
+        #   timeoutSeconds: 5
+        #   failureThreshold: 3
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 80
+        #   initialDelaySeconds: 10
+        #   periodSeconds: 5
+        #   timeoutSeconds: 3
+        #   failureThreshold: 3
+      volumes:
+      - name: app-storage
+        persistentVolumeClaim:
+          claimName: app-storage-pvc
+      - name: app-cache
+        emptyDir: {}

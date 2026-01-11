@@ -43,7 +43,7 @@ function MenuGroup() {
                     </li>
 
                     <li>
-                        <a href="#" className={`inline-flex items-center w-full ${theme.classes.p.sm} hover:bg-gray-100 ${theme.classes.textPrimary} rounded`}>Manage Permissions</a>
+                        <a href="/admin/view-permissions" className={`inline-flex items-center w-full ${theme.classes.p.sm} hover:bg-gray-100 ${theme.classes.textPrimary} rounded`}>Manage Permissions</a>
                     </li>
 
                     <li>
