@@ -197,15 +197,7 @@ const ViewRoles = () => {
                     return: true  // Only search on Enter key press
                 }
             }}
-        >
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Created At</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-        </DataTable>
+        />
     </div>
 
 </div>
