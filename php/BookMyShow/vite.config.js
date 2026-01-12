@@ -14,13 +14,19 @@ export default defineConfig({
     ],
     server: {
         host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
         hmr: {
-            host: 'localhost',
+            protocol: 'ws',
+            host: '127.0.0.1',
+            port: 5173,
+            clientPort: 5173,
         },
         watch: {
             usePolling: true,
             interval: 1000,
             ignored: ['**/storage/framework/views/**', '**/vendor/**', '**/node_modules/**'],
         },
+        cors: true,
     },
 });
