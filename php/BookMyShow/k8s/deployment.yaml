@@ -33,6 +33,19 @@ spec:
           mountPath: /var/www/html/storage
         - name: app-cache
           mountPath: /var/www/html/bootstrap/cache
+      - name: npm-install
+        image: sail-8.5/app:latest
+        imagePullPolicy: Never
+        command:
+        - sh
+        - -c
+        - |
+          cd /var/www/html
+          npm install
+        workingDir: /var/www/html
+        volumeMounts:
+        - name: node-modules
+          mountPath: /var/www/html/node_modules
       containers:
       - name: app
         image: sail-8.5/app:latest
@@ -94,6 +107,8 @@ spec:
           mountPath: /var/www/html/storage
         - name: app-cache
           mountPath: /var/www/html/bootstrap/cache
+        - name: node-modules
+          mountPath: /var/www/html/node_modules
         resources:
           requests:
             memory: "256Mi"
@@ -123,4 +138,6 @@ spec:
         persistentVolumeClaim:
           claimName: app-storage-pvc
       - name: app-cache
+        emptyDir: {}
+      - name: node-modules
         emptyDir: {}

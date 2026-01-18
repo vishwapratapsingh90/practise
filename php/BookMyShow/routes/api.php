@@ -15,7 +15,13 @@ Route::prefix('v1')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/authorize', [AuthController::class, 'authorize']);
         Route::get('/user-permissions', [AuthController::class, 'getUserPermissions']);
+
         Route::get('/roles', [RoleController::class, 'getRoles']);
+        Route::get('/role/{id}', [RoleController::class, 'getRole']);
+        Route::post('/role', [RoleController::class, 'createRole']);
+        Route::put('/role/{id}', [RoleController::class, 'updateRole']);
+        Route::delete('/role/{id}', [RoleController::class, 'deleteRole']);
+
         Route::get('/permissions', [PermissionController::class, 'getPermissions']);
     });
 });

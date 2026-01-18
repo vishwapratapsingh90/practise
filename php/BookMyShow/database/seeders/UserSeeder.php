@@ -38,8 +38,18 @@ class UserSeeder extends Seeder
             $roleId = $userData['role_id'];
             unset($userData['role_id']);
 
-            $user = User::create($userData);
-            $user->roles()->attach($roleId);
+            // Use updateOrCreate to avoid duplicate email errors
+            $user = User::updateOrCreate(
+                ['email' => $userData['email']], // Search by email
+                [
+                    'name' => $userData['name'],
+                    'password' => $userData['password'],
+                    'status' => User::STATUS_ACTIVE
+                ]
+            );
+            
+            // Sync role with status (replaces existing or adds new)
+            $user->roles()->sync([$roleId => ['status' => User::STATUS_ACTIVE]]);
         }
     }
 }

@@ -19,6 +19,20 @@ const ViewRoles = () => {
     const columns = [
         { data: 'name', title: 'Name' },
         {
+            data: 'status',
+            title: 'Status',
+            orderable: false,
+            render: function(data) {
+                const statusMap = {
+                    1: { label: 'Active', class: 'bg-green-100 text-green-800' },
+                    2: { label: 'Inactive', class: 'bg-yellow-100 text-yellow-800' },
+                    3: { label: 'Deleted', class: 'bg-red-100 text-red-800' }
+                };
+                const status = statusMap[data] || { label: 'Unknown', class: 'bg-gray-100 text-gray-800' };
+                return `<span class="px-2 py-1 text-xs font-semibold rounded-full ${status.class}">${status.label}</span>`;
+            }
+        },
+        {
             data: 'created_at',
             title: 'Created At',
             render: function(data) {
@@ -39,6 +53,11 @@ const ViewRoles = () => {
             orderable: false,
             createdCell: (td, cellData, rowData) => {
                 // Use React to render buttons with onClick handlers
+                const viewBtn = document.createElement('button');
+                viewBtn.className = 'text-green-600 hover:underline mx-2';
+                viewBtn.textContent = 'View';
+                viewBtn.onclick = () => navigate(`/admin/roles/view/${rowData.id}`);
+
                 const editBtn = document.createElement('button');
                 editBtn.className = 'text-blue-600 hover:underline mx-2';
                 editBtn.textContent = 'Edit';
@@ -50,6 +69,7 @@ const ViewRoles = () => {
                 deleteBtn.onclick = () => handleDeleteRole(rowData.id);
 
                 td.innerHTML = '';
+                td.appendChild(viewBtn);
                 td.appendChild(editBtn);
                 td.appendChild(deleteBtn);
             }
@@ -104,7 +124,7 @@ const ViewRoles = () => {
         }
 
         try {
-            await window.axios.delete(`/api/v1/roles/${roleId}`, {
+            await window.axios.delete(`/api/v1/role/${roleId}`, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
@@ -135,6 +155,7 @@ const ViewRoles = () => {
                 console.log('Authorization failed, logging out');
                 // Logout and redirect to login if not authorized
                 try {
+                    await window.axios.get('/sanctum/csrf-cookie');
                     await window.axios.post('/api/v1/logout', {}, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem('token')}`

@@ -17,6 +17,7 @@ function Dashboard() {
             if (isAuthorizedResponse === false) {
                 // Call logout API to invalidate token on server
                 try {
+                    await window.axios.get('/sanctum/csrf-cookie');
                     await window.axios.post('/api/v1/logout', {}, {
                         headers: {
                             Authorization: `Bearer ${localStorage.getItem('token')}`

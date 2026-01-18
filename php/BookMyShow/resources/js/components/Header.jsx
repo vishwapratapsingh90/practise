@@ -26,6 +26,9 @@ function Header({ pageTitle }) {
     }
 
     const handleLogout = async() => {
+        // Get CSRF cookie before logout
+        await window.axios.get('/sanctum/csrf-cookie');
+        
         const response = await window.axios.post('/api/v1/logout', {}, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`

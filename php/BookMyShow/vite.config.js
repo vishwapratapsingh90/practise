@@ -14,6 +14,8 @@ export default defineConfig({
     ],
     server: {
         host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
         hmr: {
             host: 'localhost',
         },
@@ -22,5 +24,6 @@ export default defineConfig({
             interval: 1000,
             ignored: ['**/storage/framework/views/**', '**/vendor/**', '**/node_modules/**'],
         },
+        cors: true,
     },
 });
