@@ -12,9 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('permission_role', function (Blueprint $table) {
+            $table->id(); // Optional: auto-incrementing primary key
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
-            $table->primary(['role_id', 'permission_id']);
+            $table->tinyInteger('status')->default(1)->comment('1=active, 2=inactive, 3=deleted');
+            $table->unique(['role_id', 'permission_id']); // Unique constraint instead of composite primary
+            $table->timestamps(); // Optional: if you want to track when permissions were assigned
+
+            $table->index('status'); // Index for filtering by status
         });
     }
 

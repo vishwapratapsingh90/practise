@@ -91,10 +91,59 @@ kubectl wait --for=condition=ready pod -l tier=frontend --timeout=120s
 # Get pod name
 $podName = kubectl get pods -l tier=frontend -o jsonpath='{.items[0].metadata.name}'
 
-# Run migrations and seeders
+# Run migrations
 kubectl exec -it $podName -- php artisan migrate
+
+# Run seeders (safe to run multiple times - won't create duplicates)
 kubectl exec -it $podName -- php artisan db:seed
+
+# If you added new migrations after initial setup, run:
+kubectl exec -it $podName -- php artisan migrate
+
+# To refresh database (WARNING: deletes all data)
+# kubectl exec -it $podName -- php artisan migrate:fresh --seed
 ```
+
+**Note:** The seeders use `firstOrCreate` and `updateOrCreate` methods, so they're safe to run multiple times without creating duplicate entries.
+
+#### Configure CSRF/CORS for Minikube
+
+Laravel Sanctum needs to know which domains are allowed to make authenticated requests. Update the `.env` file with your Minikube service URLs:
+
+```powershell
+# 1. Get your actual Minikube service URL
+minikube service bookmyshow-service --url
+# Example output: http://192.168.49.2:30080
+
+# 2. Extract the domain:port (e.g., 192.168.49.2:30080)
+
+# 3. Copy .env file from pod to local
+kubectl cp ${podName}:/var/www/html/.env .env.local
+
+# 4. Edit .env file and add/update SANCTUM_STATEFUL_DOMAINS
+# Add your Minikube IP and port to the list:
+# SANCTUM_STATEFUL_DOMAINS=localhost,localhost:5173,127.0.0.1,192.168.49.2:30080
+
+# 5. Copy updated .env back to pod
+kubectl cp .env.local ${podName}:/var/www/html/.env
+
+# 6. Restart the deployment to apply changes
+kubectl rollout restart deployment bookmyshow-app
+
+# 7. Clean up local copy
+Remove-Item .env.local
+```
+
+**Why this is needed:**
+- Sanctum uses cookie-based authentication for SPAs (Single Page Applications)
+- CSRF protection requires the frontend domain to be in the stateful domains list
+- Minikube assigns dynamic IPs (like `192.168.49.2`) with NodePort services
+- Without this configuration, you'll get CSRF token mismatch errors
+
+**What SANCTUM_STATEFUL_DOMAINS does:**
+- Tells Laravel which domains should receive stateful API authentication cookies
+- Enables CSRF cookie-based protection for requests from these domains
+- Must include: localhost (dev), Vite port (5173), and your Minikube service URL
 
 #### Troubleshooting: Image Pull Issues
 
@@ -234,6 +283,58 @@ minikube -p minikube docker-env --shell powershell | Invoke-Expression
 docker images | Select-String "sail-8.5"
 ```
 
+#### Development Workflow - Syncing Local Changes to Pods
+
+**Important:** Kubernetes pods run containerized applications with isolated filesystems. Local code changes don't automatically reflect in running pods because:
+- The Docker image contains code from build time
+- Pods use their own filesystem, separate from your local machine
+- There's no automatic sync between local files and pod files
+
+**Development Options:**
+
+**Option A: Manual File Copy (Quick Changes)**
+```powershell
+# Get pod name
+$podName = kubectl get pods -l tier=frontend -o jsonpath='{.items[0].metadata.name}'
+
+# Copy single file
+kubectl cp "path/to/file.jsx" "${podName}:/var/www/html/path/to/file.jsx"
+
+# Copy entire directory
+kubectl cp "resources/js" "${podName}:/var/www/html/resources/js"
+
+# For React changes, Vite will auto-reload if dev server is running
+# For PHP changes, no restart needed (Laravel auto-loads)
+```
+
+**Option B: Rebuild Image (Production-like Testing)**
+```powershell
+# 1. Configure Minikube Docker environment
+minikube -p minikube docker-env --shell powershell | Invoke-Expression
+
+# 2. Rebuild image with changes
+docker build -t sail-8.5/app:latest .
+
+# 3. Delete pod to force image pull
+kubectl delete pod -l tier=frontend
+
+# 4. Wait for new pod
+kubectl wait --for=condition=ready pod -l tier=frontend --timeout=120s
+
+# 5. Restart Vite dev server (see Daily Startup Commands)
+```
+
+**Option C: Use WSL/Linux (Recommended for Heavy Development)**
+For active development with frequent changes, consider using WSL or Linux where you can use:
+- Docker volumes for live code sync
+- Laravel Sail for seamless local development
+- Faster file I/O and better Docker integration
+
+**Best Practice:**
+- Use **Option A** for quick UI tweaks and testing
+- Use **Option B** before committing code or testing production builds
+- Use **Option C** for day-to-day development work
+
 #### Daily Startup Commands (After Minikube Restart)
 
 After restarting your computer or minikube, run these commands to get everything running:
@@ -242,32 +343,149 @@ After restarting your computer or minikube, run these commands to get everything
 # 1. Start Minikube
 minikube start
 
-# 2. Wait for pods to be ready
+# 2. Verify all deployments exist (apply if needed)
+kubectl get deployments
+# If deployments don't exist, run the Initial Deployment section above
+
+# 3. Wait for all pods to be ready
+kubectl wait --for=condition=ready pod -l tier=database --timeout=120s
 kubectl wait --for=condition=ready pod -l tier=frontend --timeout=120s
 
-# 3. Get the pod name
+# 4. Check all pods status
+kubectl get pods -o wide
+
+# 5. Get the application pod name
 $podName = kubectl get pods -l tier=frontend -o jsonpath='{.items[0].metadata.name}'
 
-# 4. Start Vite dev server in background
+# 6. Check if npm dependencies exist (handle "vite not found" error)
+$viteCheck = kubectl exec $podName -- test -f node_modules/.bin/vite; $?
+if (-not $viteCheck) {
+    Write-Host "`nInstalling npm dependencies (vite not found)..." -ForegroundColor Yellow
+    kubectl exec -it $podName -- npm install
+}
+
+# 7. Start Vite dev server in background
+Write-Host "`nStarting Vite dev server..." -ForegroundColor Green
 Start-Job -Name "vite-dev" -ScriptBlock { 
     kubectl exec -it $using:podName -- npm run dev -- --host 0.0.0.0 
 }
 
-# 5. Port-forward Vite dev server in background (required for CORS)
+# 8. Port-forward Vite dev server in background (required for CORS)
+Write-Host "Setting up port-forward for Vite (CORS fix)..." -ForegroundColor Green
 Start-Job -Name "port-5173" -ScriptBlock { 
     kubectl port-forward $using:podName 5173:5173 
 }
 
-# 6. Check background jobs status
+# 9. Wait a moment for jobs to start
+Start-Sleep -Seconds 3
+
+# 10. Check background jobs status
+Write-Host "`nBackground Jobs Status:" -ForegroundColor Cyan
 Get-Job
 
-# 7. Get application URLs
+# 11. Get application URLs
 Write-Host "`nApplication URLs:" -ForegroundColor Green
-minikube service bookmyshow-service --url
+Write-Host "BookMyShow: " -NoNewline
+$appUrl = minikube service bookmyshow-service --url
+Write-Host $appUrl
+Write-Host "phpMyAdmin: " -NoNewline
 minikube service phpmyadmin-service --url
+Write-Host "Vite Dev Server (via port-forward): http://localhost:5173" -ForegroundColor Green
 
-# Optional: If vite.config.js was updated and image not rebuilt
-# kubectl cp vite.config.js ${podName}:/var/www/html/vite.config.js
+Write-Host "`nNote: Access the application through the BookMyShow URL above." -ForegroundColor Yellow
+Write-Host "The Vite dev server runs on port 5173 for hot-reload functionality." -ForegroundColor Yellow
+
+# 12. Verify SANCTUM_STATEFUL_DOMAINS includes Minikube URL
+Write-Host "`nChecking SANCTUM_STATEFUL_DOMAINS configuration..." -ForegroundColor Cyan
+$minikubeDomain = $appUrl -replace 'http://', '' -replace 'https://', ''
+$currentDomains = kubectl exec $podName -- grep SANCTUM_STATEFUL_DOMAINS /var/www/html/.env
+if ($currentDomains -notlike "*$minikubeDomain*") {
+    Write-Host "WARNING: $minikubeDomain not found in SANCTUM_STATEFUL_DOMAINS!" -ForegroundColor Red
+    Write-Host "You may encounter CSRF errors. Update .env file with:" -ForegroundColor Yellow
+    Write-Host "SANCTUM_STATEFUL_DOMAINS=localhost,localhost:5173,127.0.0.1,$minikubeDomain" -ForegroundColor Yellow
+} else {
+    Write-Host "SANCTUM_STATEFUL_DOMAINS configured correctly!" -ForegroundColor Green
+}
+```
+
+Common issues and fixes:
+
+```powershell
+# If you encounter CSRF token mismatch errors:
+# Get your Minikube service URL
+$appUrl = minikube service bookmyshow-service --url
+$domain = $appUrl -replace 'http://', ''
+
+# Update SANCTUM_STATEFUL_DOMAINS in the pod
+kubectl exec -it $podName -- sed -i "s|SANCTUM_STATEFUL_DOMAINS=.*|SANCTUM_STATEFUL_DOMAINS=localhost,localhost:5173,127.0.0.1,$domain|g" /var/www/html/.env
+kubectl rollout restart deployment bookmyshow-app
+
+# If Vite still shows CORS errors after startup:
+kubectl cp vite.config.js ${podName}:/var/www/html/vite.config.js
+kubectl exec -it $podName -- pkill -f vite  # Kill existing vite process
+# Then restart the vite-dev job
+
+# If pods are not starting:
+kubectl describe pod $podName  # Check for errors
+kubectl logs $podName -f  # View logs
+
+# If image is missing:
+minikube -p minikube docker-env --shell powershell | Invoke-Expression
+docker images | Select-String "sail-8.5"
+# If not found, rebuild: docker build -t sail-8.5/app:latest .
+```
+
+#### Quick Sync Helper Script
+
+Save this as `sync-to-pod.ps1` for easier development:
+
+```powershell
+# sync-to-pod.ps1 - Sync local changes to Kubernetes pod
+param(
+    [string]$FilePath = "",
+    [switch]$AllJS,
+    [switch]$AllPHP
+)
+
+$podName = kubectl get pods -l tier=frontend -o jsonpath='{.items[0].metadata.name}'
+Write-Host "Using pod: $podName" -ForegroundColor Cyan
+
+if ($FilePath) {
+    # Sync specific file
+    $relativePath = $FilePath -replace '^.*\\BookMyShow\\', ''
+    $remotePath = "/var/www/html/$($relativePath -replace '\\', '/')"
+    kubectl cp $FilePath "${podName}:${remotePath}"
+    Write-Host "Synced: $FilePath" -ForegroundColor Green
+}
+elseif ($AllJS) {
+    # Sync all JS/JSX files
+    kubectl cp "resources/js" "${podName}:/var/www/html/resources/js"
+    Write-Host "Synced all JS files" -ForegroundColor Green
+}
+elseif ($AllPHP) {
+    # Sync PHP files
+    kubectl cp "app" "${podName}:/var/www/html/app"
+    kubectl cp "routes" "${podName}:/var/www/html/routes"
+    Write-Host "Synced PHP files" -ForegroundColor Green
+}
+else {
+    Write-Host "Usage:" -ForegroundColor Yellow
+    Write-Host "  .\sync-to-pod.ps1 -FilePath 'path\to\file.jsx'"
+    Write-Host "  .\sync-to-pod.ps1 -AllJS"
+    Write-Host "  .\sync-to-pod.ps1 -AllPHP"
+}
+```
+
+Usage examples:
+```powershell
+# Sync single file
+.\sync-to-pod.ps1 -FilePath "resources\js\pages\admin\ViewRoles.jsx"
+
+# Sync all React components
+.\sync-to-pod.ps1 -AllJS
+
+# Sync all PHP code
+.\sync-to-pod.ps1 -AllPHP
 ```
 
 To view job output or stop jobs:

@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('slug')->unique(); // e.g., 'view-dashboard'
             $table->string('description')->nullable();
+            $table->tinyInteger('status')->default(1)->comment('1=active, 2=inactive, 3=deleted');
             $table->timestamps();
+            
+            $table->index('status');
         });
     }
 

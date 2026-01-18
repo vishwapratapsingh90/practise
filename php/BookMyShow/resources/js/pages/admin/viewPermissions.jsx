@@ -18,6 +18,20 @@ function ViewPermissions() {
             { data: 'slug', title: 'Slug' },
             { data: 'description', title: 'Description', orderable: false },
             {
+                data: 'status',
+                title: 'Status',
+                orderable: false,
+                render: function(data) {
+                    const statusMap = {
+                        1: { label: 'Active', class: 'bg-green-100 text-green-800' },
+                        2: { label: 'Inactive', class: 'bg-yellow-100 text-yellow-800' },
+                        3: { label: 'Deleted', class: 'bg-red-100 text-red-800' }
+                    };
+                    const status = statusMap[data] || { label: 'Unknown', class: 'bg-gray-100 text-gray-800' };
+                    return `<span class="px-2 py-1 text-xs font-semibold rounded-full ${status.class}">${status.label}</span>`;
+                }
+            },
+            {
                 data: 'created_at',
                 title: 'Created At',
                 render: function(data) {
@@ -133,6 +147,7 @@ function ViewPermissions() {
                     console.log('Authorization failed, logging out');
                     // Logout and redirect to login if not authorized
                     try {
+                        await window.axios.get('/sanctum/csrf-cookie');
                         await window.axios.post('/api/v1/logout', {}, {
                             headers: {
                                 Authorization: `Bearer ${localStorage.getItem('token')}`

@@ -70,8 +70,14 @@ class PermissionSeeder extends Seeder
         ];
 
         foreach ($data as $permission) {
-            // Create permission record
-            Permission::create($permission);
+            // Create permission record if it doesn't exist
+            Permission::firstOrCreate(
+                ['slug' => $permission['slug']], // Search by slug
+                [
+                    'description' => $permission['description'],
+                    'status' => Permission::STATUS_ACTIVE // Set status if creating new
+                ]
+            );
         }
     }
 }

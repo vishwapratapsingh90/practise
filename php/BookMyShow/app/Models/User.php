@@ -13,6 +13,18 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
 
+    // Status constants
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 2;
+    const STATUS_DELETED = 3;
+
+    // Status labels for display
+    const STATUS_LABELS = [
+        self::STATUS_ACTIVE => 'Active',
+        self::STATUS_INACTIVE => 'Inactive',
+        self::STATUS_DELETED => 'Deleted',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,6 +34,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'status',
     ];
 
     /**
@@ -44,6 +57,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'status' => 'integer',
         ];
     }
 
@@ -52,7 +66,20 @@ class User extends Authenticatable
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get only active roles for the user.
+     */
+    public function activeRoles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id')
+            ->wherePivot('status', self::STATUS_ACTIVE)
+            ->withPivot('status')
+            ->withTimestamps();
     }
 
     /**
@@ -77,5 +104,53 @@ class User extends Authenticatable
     public function hasPermission($permissionName)
     {
         return $this->permissions()->contains($permissionName);
+    }
+
+    /**
+     * Get status label
+     */
+    public function getStatusLabelAttribute()
+    {
+        return self::STATUS_LABELS[$this->status] ?? 'Unknown';
+    }
+
+    /**
+     * Check if user is active
+     */
+    public function isActive()
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
+
+    /**
+     * Check if user is inactive
+     */
+    public function isInactive()
+    {
+        return $this->status === self::STATUS_INACTIVE;
+    }
+
+    /**
+     * Check if user is deleted
+     */
+    public function isDeleted()
+    {
+        return $this->status === self::STATUS_DELETED;
+    }
+
+    /**
+     * Scope to get only active users
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', self::STATUS_ACTIVE);
+    }
+
+    /**
+     * Scope to get only non-deleted users
+     */
+    public function scopeNotDeleted($query)
+    {
+        return $query->where('status', '!=', self::STATUS_DELETED);
     }
 }

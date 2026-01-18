@@ -39,7 +39,7 @@ function MenuGroup() {
             <div id="accessControl" className={`absolute mt-2 z-10 ${isOpen1 ? 'block' : 'hidden'} ${theme.classes.bgWhite} border border-gray-200 rounded-lg ${theme.classes.shadow.lg} w-44`}>
                 <ul className={`${theme.classes.p.sm} ${theme.classes.text.sm} ${theme.classes.textSecondary} font-medium`} aria-labelledby="accessControl">
                     <li>
-                        <Link to="/admin/view-roles" className={`inline-flex items-center w-full ${theme.classes.p.sm} hover:bg-gray-100 ${theme.classes.textPrimary} rounded`}>Manage Roles</Link>
+                        <Link to="/admin/roles" className={`inline-flex items-center w-full ${theme.classes.p.sm} hover:bg-gray-100 ${theme.classes.textPrimary} rounded`}>Manage Roles</Link>
                     </li>
 
                     <li>

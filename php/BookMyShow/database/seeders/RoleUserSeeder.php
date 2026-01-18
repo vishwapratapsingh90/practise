@@ -32,7 +32,7 @@ class RoleUserSeeder extends Seeder
         ];
 
         foreach ($data as $roleUser) {
-            RoleUser::create($roleUser);
+            RoleUser::firstOrCreate($roleUser);
         }
     }
 }
