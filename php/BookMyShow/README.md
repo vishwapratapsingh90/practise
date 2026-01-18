@@ -522,6 +522,18 @@ Get-Job | Remove-Job
 
 ![Manage Roles](./public/images/screenshots/ManageRoles.png)
 
+### Create Role
+
+![Create Role](./public/images/screenshots/CreateRole.png)
+
+### View Role
+
+![View Role](./public/images/screenshots/ViewRole.png)
+
+### Edit Role
+
+![Edit Role](./public/images/screenshots/EditRole.png)
+
 ### Manage Permissions
 
 ![Manage Permissions](./public/images/screenshots/ManagePermissions.png)
