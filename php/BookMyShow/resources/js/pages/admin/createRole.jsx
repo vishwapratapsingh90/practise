@@ -10,7 +10,6 @@ function CreateRole() {
     const [error, setError] = useState('');
     const [errorField, setErrorField] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(false);
     const navigate = useNavigate();
@@ -72,8 +71,6 @@ function CreateRole() {
                 navigate('/login');
                 return;
             }
-
-            setUser(getAuthenticatedUser());
 
             console.log("isEditMode:", isEditMode);
 

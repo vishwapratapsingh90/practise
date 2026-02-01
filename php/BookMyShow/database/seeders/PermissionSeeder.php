@@ -56,10 +56,6 @@ class PermissionSeeder extends Seeder
                 'description' => 'View permission details',
             ],
             [
-                'slug' => 'update-permission',
-                'description' => 'Assign or revoke permission to role',
-            ],
-            [
                 'slug' => 'admin-dashboard-access',
                 'description' => 'Access to admin dashboard',
             ],
