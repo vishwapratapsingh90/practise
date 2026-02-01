@@ -23,5 +23,9 @@ Route::prefix('v1')->group(function () {
         Route::delete('/role/{id}', [RoleController::class, 'deleteRole']);
 
         Route::get('/permissions', [PermissionController::class, 'getPermissions']);
+        Route::get('/permission/{id}', [PermissionController::class, 'getPermission']);
+        Route::post('/permission', [PermissionController::class, 'createPermission']);
+        Route::put('/permission/{id}', [PermissionController::class, 'updatePermission']);
+        Route::delete('/permission/{id}', [PermissionController::class, 'deletePermission']);
     });
 });

@@ -10,6 +10,11 @@ class PermissionController extends Controller
 {
     use ApiResponseTrait;
 
+    /**
+     * Retrieve permissions with optional pagination.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function getPermissions(Request $request)
     {
         $message = 'Permissions retrieved successfully';
@@ -45,4 +50,94 @@ class PermissionController extends Controller
         return $this->paginatedResponse($permissions, $message);
     }
 
+    /**
+     * Retrieve a single permission.
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPermission($id)
+    {
+        $permission = Permission::find($id);
+
+        // Check if permission exists
+        if (!$permission) {
+            return $this->notFoundResponse('Permission not found');
+        }
+
+        $message = 'Permission retrieved successfully';
+        return $this->successResponse($permission, $message);
+    }
+
+    /**
+     * Create a new permission.
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function createPermission(Request $request)
+    {
+        $message = 'Permission created successfully';
+
+        // Validate inputs
+        $validated = $request->validate([
+            'slug' => 'required|string|unique:permissions,slug|min:3|max:100',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        $permission = Permission::create([
+            'slug' => $validated['slug'],
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        return $this->successResponse($permission, $message, 201);
+    }
+
+    /**
+     * Update an existing permission.
+     * @param Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updatePermission(Request $request, $id)
+    {
+        $permission = Permission::find($id);
+
+        // Check if permission exists
+        if (!$permission) {
+            return $this->notFoundResponse('Permission not found');
+        }
+
+        // Validate inputs
+        $validated = $request->validate([
+            'slug' => 'required|string|unique:permissions,slug,' . $id . '|min:3|max:100',
+            'description' => 'nullable|string|max:255',
+            'status' => 'nullable|integer|in:' . implode(',', [Permission::STATUS_ACTIVE, Permission::STATUS_INACTIVE]),
+        ]);
+
+        // Update permission
+        $permission->update($validated);
+
+        $message = 'Permission updated successfully';
+        return $this->successResponse($permission, $message);
+    }
+
+    /**
+     * Delete a permission.
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deletePermission($id)
+    {
+        $permission = Permission::find($id);
+
+        // Check if permission exists
+        if (!$permission) {
+            return $this->notFoundResponse('Permission not found');
+        }
+
+        // Delete permission
+        $permission->delete();
+
+        $message = 'Permission deleted successfully';
+        return $this->successResponse(null, $message);
+    }
 }

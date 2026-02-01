@@ -50,6 +50,18 @@ class RolePermissionSeeder extends Seeder
                 'role_id' => Role::where('name', 'admin')->first()->id,
                 'permission_id' => Permission::where('slug', 'add-permission')->first()->id,
             ],
+            [
+                'role_id' => Role::where('name', 'admin')->first()->id,
+                'permission_id' => Permission::where('slug', 'view-permission')->first()->id,
+            ],
+            [
+                'role_id' => Role::where('name', 'admin')->first()->id,
+                'permission_id' => Permission::where('slug', 'edit-permission')->first()->id,
+            ],
+            [
+                'role_id' => Role::where('name', 'admin')->first()->id,
+                'permission_id' => Permission::where('slug', 'delete-permission')->first()->id,
+            ],
             // Customer Role Permissions
             [
                 'role_id' => Role::where('name', 'customer')->first()->id,

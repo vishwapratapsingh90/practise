@@ -52,6 +52,11 @@ function ViewPermissions() {
                 orderable: false,
                 createdCell: (td, cellData, rowData) => {
                     // Use React to render buttons with onClick handlers
+                    const viewBtn = document.createElement('button');
+                    viewBtn.className = 'text-green-600 hover:underline mx-2';
+                    viewBtn.textContent = 'View';
+                    viewBtn.onclick = () => navigate(`/admin/permissions/view/${rowData.id}`);
+
                     const editBtn = document.createElement('button');
                     editBtn.className = 'text-blue-600 hover:underline mx-2';
                     editBtn.textContent = 'Edit';
@@ -63,6 +68,7 @@ function ViewPermissions() {
                     deleteBtn.onclick = () => handleDeletePermission(rowData.id);
 
                     td.innerHTML = '';
+                    td.appendChild(viewBtn);
                     td.appendChild(editBtn);
                     td.appendChild(deleteBtn);
                 }
@@ -117,7 +123,7 @@ function ViewPermissions() {
             }
 
             try {
-                await window.axios.delete(`/api/v1/permissions/${permissionId}`, {
+                await window.axios.delete(`/api/v1/permission/${permissionId}`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }

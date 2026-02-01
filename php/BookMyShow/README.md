@@ -538,6 +538,18 @@ Get-Job | Remove-Job
 
 ![Manage Permissions](./public/images/screenshots/ManagePermissions.png)
 
+### Create Permission
+
+![Create Permission](./public/images/screenshots/CreatePermission.png)
+
+### View Permission
+
+![View Permission](./public/images/screenshots/ViewPermission.png)
+
+### Edit Permission
+
+![Edit Permission](./public/images/screenshots/EditPermission.png)
+
 ## API Document
 
 [Swagger YAML](./public/BookMyShow.swagger.yaml)
