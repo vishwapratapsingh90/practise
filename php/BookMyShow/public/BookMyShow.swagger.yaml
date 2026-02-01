@@ -415,7 +415,7 @@ paths:
         - application/json
       produces:
         - application/json
-  /api/v1/role/8:
+  /api/v1/role/2:
     put:
       summary: Update Role
       deprecated: false
@@ -427,19 +427,19 @@ paths:
           description: ''
           required: false
           type: string
-          x-example: Bearer 6|nkc7M7VbAadXE05s1NEmarINBiH7kxzhKbe1OkbY2f44fc06
+          x-example: Bearer 2|blv8tKr6bCfyTWNItygjNSgggvBRArUMj2td9sYw1d24b43f
         - name: Accept
           in: header
           description: ''
           required: false
           type: string
           x-example: application/json
-        - required: true
-          name: body
-          in: body
-          schema:
-            type: object
-            properties: {}
+        - name: name
+          in: formData
+          type: string
+        - name: status
+          in: formData
+          type: integer
       responses:
         '200':
           description: ''
@@ -458,9 +458,10 @@ paths:
             properties: {}
       security: []
       consumes:
-        - application/json
+        - application/x-www-form-urlencoded
       produces:
         - application/json
+  /api/v1/role/8:
     delete:
       summary: Delete Role
       deprecated: false
@@ -595,6 +596,210 @@ paths:
                 last_page: 1
                 path: http://127.0.0.1/api/v1/permissions
               message: Permissions retrieved successfully
+          schema:
+            type: object
+            properties: {}
+      security: []
+      produces:
+        - application/json
+  /api/v1/permission/1:
+    get:
+      summary: Get Permission
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: Bearer 2|blv8tKr6bCfyTWNItygjNSgggvBRArUMj2td9sYw1d24b43f
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          examples:
+            application/json:
+              data:
+                id: 1
+                slug: list-roles
+                description: List all roles
+                status: 1
+                created_at: '2026-02-01T13:40:52.000000Z'
+                updated_at: '2026-02-01T13:40:52.000000Z'
+              message: Permission retrieved successfully
+          schema:
+            type: object
+            properties: {}
+      security: []
+      produces:
+        - application/json
+  /api/v1/permission:
+    post:
+      summary: Create Permission
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: Bearer 2|blv8tKr6bCfyTWNItygjNSgggvBRArUMj2td9sYw1d24b43f
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: slug
+          in: formData
+          type: string
+        - name: status
+          in: formData
+          type: integer
+        - name: description
+          in: formData
+          type: string
+      responses:
+        '201':
+          description: ''
+          headers: {}
+          examples:
+            application/json:
+              data:
+                slug: sample-permission
+                description: sample description
+                updated_at: '2026-02-01T14:58:13.000000Z'
+                created_at: '2026-02-01T14:58:13.000000Z'
+                id: 15
+              message: Permission created successfully
+          schema:
+            type: object
+            properties: {}
+      security: []
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+  /api/v1/permission/5:
+    put:
+      summary: Update Permission
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: Bearer 2|blv8tKr6bCfyTWNItygjNSgggvBRArUMj2td9sYw1d24b43f
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: slug
+          in: formData
+          type: string
+        - name: status
+          in: formData
+          type: integer
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          examples:
+            application/json:
+              data:
+                id: 5
+                slug: delete-role
+                description: Delete a role
+                status: 2
+                created_at: '2026-02-01T13:40:52.000000Z'
+                updated_at: '2026-02-01T14:31:41.000000Z'
+              message: Permission updated successfully
+          schema:
+            type: object
+            properties: {}
+      security: []
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+  /api/v1/permission/15:
+    delete:
+      summary: Delete Permission
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: Bearer 2|blv8tKr6bCfyTWNItygjNSgggvBRArUMj2td9sYw1d24b43f
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          examples:
+            application/json:
+              data: null
+              message: Permission deleted successfully
+          schema:
+            type: object
+            properties: {}
+        '404':
+          description: ''
+          headers: {}
+          examples:
+            application/json:
+              errors:
+                - status: '404'
+                  title: Not Found
+                  detail: Permission not found
           schema:
             type: object
             properties: {}
