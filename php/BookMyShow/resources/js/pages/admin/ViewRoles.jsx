@@ -68,10 +68,16 @@ const ViewRoles = () => {
                 deleteBtn.textContent = 'Delete';
                 deleteBtn.onclick = () => handleDeleteRole(rowData.id);
 
+                const viewPermissionsBtn = document.createElement('button');
+                viewPermissionsBtn.className = 'text-cyan-600 hover:underline mx-2';
+                viewPermissionsBtn.textContent = 'Permissions';
+                viewPermissionsBtn.onclick = () => navigate(`/admin/roles/${rowData.id}/permissions`);
+
                 td.innerHTML = '';
                 td.appendChild(viewBtn);
                 td.appendChild(editBtn);
                 td.appendChild(deleteBtn);
+                td.appendChild(viewPermissionsBtn);
             }
         }
     ];

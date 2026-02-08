@@ -46,9 +46,9 @@ function MenuGroup() {
                         <a href="/admin/permissions" className={`inline-flex items-center w-full ${theme.classes.p.sm} hover:bg-gray-100 ${theme.classes.textPrimary} rounded`}>Manage Permissions</a>
                     </li>
 
-                    <li>
+                    {/* <li>
                         <a href="#" className={`inline-flex items-center w-full ${theme.classes.p.sm} hover:bg-gray-100 ${theme.classes.textPrimary} rounded`}>Manage Role Access</a>
-                    </li>
+                    </li> */}
 
                     {/* <li>
                         <button

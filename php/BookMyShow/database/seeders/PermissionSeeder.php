@@ -36,6 +36,14 @@ class PermissionSeeder extends Seeder
                 'description' => 'Delete a role',
             ],
             [
+                'slug' => 'view-role-permissions',
+                'description' => 'View permissions assigned to a role',
+            ],
+            [
+                'slug' => 'update-role-permissions',
+                'description' => 'Update permissions assigned to a role',
+            ],
+            [
                 'slug' => 'list-permissions',
                 'description' => 'List all permissions',
             ],

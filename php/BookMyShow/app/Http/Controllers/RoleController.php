@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Traits\ApiResponseTrait;
+use App\Models\Permission;
+use App\Models\PermissionRole;
 use App\Models\Role;
 use Illuminate\Http\Request;
 
@@ -115,6 +117,11 @@ class RoleController extends Controller
         return $this->successResponse($role, 'Role updated successfully');
     }
 
+    /**
+     * Soft delete a role by setting its status to deleted.
+     * @param int $id Role ID
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function deleteRole($id)
     {
         $role = Role::find($id);
@@ -128,5 +135,114 @@ class RoleController extends Controller
         $role->save();
 
         return $this->successResponse([], 'Role deleted successfully');
+    }
+
+    /**
+     * Get permissions for a specific role.
+     * @param int $id Role ID
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getRolePermissions($id)
+    {
+        $role = Role::find($id);
+
+        if (!$role) {
+            return $this->notFoundResponse('Role not found');
+        }
+
+        // Get all permissions with an is_assigned column indicating if assigned to this role
+        $permissions = Permission::leftJoin('permission_role', function ($join) use ($id) {
+            $join->on('permissions.id', '=', 'permission_role.permission_id')
+                ->where('permission_role.role_id', '=', $id)
+                ->where('permission_role.status', '=', PermissionRole::STATUS_ACTIVE);
+        })
+            ->where('permissions.status', Permission::STATUS_ACTIVE)
+            ->select(
+                'permissions.id',
+                'permissions.slug',
+                'permissions.description',
+                'permissions.status',
+                \DB::raw('CASE WHEN permission_role.status = ' . PermissionRole::STATUS_ACTIVE . ' THEN 1 ELSE 0 END as is_assigned')
+            )
+            ->orderBy('permissions.id', 'asc')
+            ->get();
+
+        $data = [
+            'role_name' => $role->name,
+            'role_description' => $role->description ?? '',
+            'permissions' => $permissions
+        ];
+
+        return $this->successResponse($data, 'Permissions retrieved successfully');
+    }
+
+    /**
+     * Assign a permission to a role.
+     * @param int $id Role ID
+     * @param int $permissionId Permission ID
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function assignRolePermission($id, $permissionId)
+    {
+        $role = Role::find($id);
+
+        if (!$role) {
+            return $this->notFoundResponse('Role not found');
+        }
+
+        // Check if permission exists
+        $permission = Permission::find($permissionId);
+        if (!$permission) {
+            return $this->notFoundResponse('Permission not found');
+        }
+
+        // Check if permission is already assigned to role with active status
+        if ($role->permissions()->where('permissions.id', $permissionId)->where('permission_role.status', PermissionRole::STATUS_ACTIVE)->exists()) {
+            return $this->errorResponse('Permission already assigned to role', 409);
+        }
+
+        // Check if permission mapping exists with inactive status
+        $inactiveMapping = $role->permissions()->where('permissions.id', $permissionId)->where('permission_role.status', PermissionRole::STATUS_INACTIVE)->exists();
+
+        if ($inactiveMapping) {
+            // Update existing inactive mapping to active
+            $role->permissions()->updateExistingPivot($permissionId, ['status' => PermissionRole::STATUS_ACTIVE]);
+        } else {
+            // Assign permission to role with new mapping
+            $role->permissions()->attach($permissionId, ['status' => PermissionRole::STATUS_ACTIVE]);
+        }
+
+        return $this->successResponse([], 'Permission assigned to role successfully');
+    }
+
+    /**
+     * Revoke a permission from a role by setting pivot status to inactive.
+     * @param int $id Role ID
+     * @param int $permissionId Permission ID
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function revokeRolePermission($id, $permissionId)
+    {
+        $role = Role::find($id);
+
+        if (!$role) {
+            return $this->notFoundResponse('Role not found');
+        }
+
+        // Check if permission exists
+        $permission = Permission::find($permissionId);
+        if (!$permission) {
+            return $this->notFoundResponse('Permission not found');
+        }
+
+        // Check if permission is assigned to role
+        if (!$role->permissions()->where('permissions.id', $permissionId)->where('permission_role.status', PermissionRole::STATUS_ACTIVE)->exists()) {
+            return $this->errorResponse('Permission not assigned to role', 409);
+        }
+
+        // Revoke permission from role by setting pivot status to inactive
+        $role->permissions()->updateExistingPivot($permissionId, ['status' => PermissionRole::STATUS_INACTIVE]);
+
+        return $this->successResponse([], 'Permission revoked from role successfully');
     }
 }
