@@ -550,6 +550,10 @@ Get-Job | Remove-Job
 
 ![Edit Permission](./public/images/screenshots/EditPermission.png)
 
+### Manage Role Permissions
+
+![Manage Role Permissions](./public/images/screenshots/ManageRolePermissions.png)
+
 ## API Document
 
 [Swagger YAML](./public/BookMyShow.swagger.yaml)

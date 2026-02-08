@@ -22,6 +22,10 @@ Route::prefix('v1')->group(function () {
         Route::put('/role/{id}', [RoleController::class, 'updateRole']);
         Route::delete('/role/{id}', [RoleController::class, 'deleteRole']);
 
+        Route::get('/role/{id}/permissions', [RoleController::class, 'getRolePermissions']);
+        Route::post('/role/{id}/permissions/{permissionId}', [RoleController::class, 'assignRolePermission']);
+        Route::delete('/role/{id}/permissions/{permissionId}', [RoleController::class, 'revokeRolePermission']);
+
         Route::get('/permissions', [PermissionController::class, 'getPermissions']);
         Route::get('/permission/{id}', [PermissionController::class, 'getPermission']);
         Route::post('/permission', [PermissionController::class, 'createPermission']);

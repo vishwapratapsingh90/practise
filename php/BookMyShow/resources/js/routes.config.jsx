@@ -12,6 +12,7 @@ import CreateRole from './pages/admin/CreateRole';
 import CreatePermission from './pages/admin/CreatePermission';
 import ViewRole from './pages/admin/viewRole';
 import ViewPermission from './pages/admin/ViewPermission';
+import ViewRolePermissions from './pages/admin/ViewRolePermissions';
 
 const t = window.config?.translations?.messages || {};
 
@@ -31,6 +32,7 @@ export const routes = (
         <Route path="/admin/roles/create" element={<MainLayout pageTitle={t.addRole || "Add Role"}><CreateRole /></MainLayout>} />
         <Route path='/admin/roles/edit/:id' element={<MainLayout pageTitle={t.editRole || "Edit Role"}><CreateRole /></MainLayout>} />
         <Route path='/admin/roles/view/:id' element={<MainLayout pageTitle={t.viewRole || "View Role"}><ViewRole /></MainLayout>} />
+        <Route path='/admin/roles/:id/permissions' element={<MainLayout pageTitle={t.viewRolePermissions || "View Role Permissions"}><ViewRolePermissions /></MainLayout>} />
 
         {/* Permissions Management Routes */}
         <Route path="/admin/permissions" element={<MainLayout pageTitle={t.managePermissions || "Manage Permissions"}><ViewPermissions /></MainLayout>} />

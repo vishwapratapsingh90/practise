@@ -494,6 +494,117 @@ paths:
       security: []
       produces:
         - application/json
+  /api/v1/role/1/permissions:
+    get:
+      summary: Get Role Permissions
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: Bearer 10|cJcsV25GgOC4X2xtOl2oM4LuuXGxXZUibypWN4Vc3b4202b0
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          examples:
+            application/json:
+              data:
+                role_name: admin
+                role_description: ''
+                permissions:
+                  - id: 1
+                    slug: list-roles
+                    description: List all roles
+                    status: 1
+                    is_assigned: 1
+                  - id: 2
+                    slug: add-role
+                    description: Add a new role
+                    status: 1
+                    is_assigned: 1
+                  - id: 3
+                    slug: view-role
+                    description: View role details
+                    status: 1
+                    is_assigned: 1
+                  - id: 4
+                    slug: edit-role
+                    description: Edit an existing role
+                    status: 1
+                    is_assigned: 1
+                  - id: 5
+                    slug: delete-role
+                    description: Delete a role
+                    status: 1
+                    is_assigned: 1
+                  - id: 6
+                    slug: list-permissions
+                    description: List all permissions
+                    status: 1
+                    is_assigned: 1
+                  - id: 7
+                    slug: add-permission
+                    description: Add a new permission
+                    status: 1
+                    is_assigned: 1
+                  - id: 8
+                    slug: edit-permission
+                    description: Edit an existing permission
+                    status: 1
+                    is_assigned: 1
+                  - id: 9
+                    slug: delete-permission
+                    description: Delete a permission
+                    status: 1
+                    is_assigned: 1
+                  - id: 10
+                    slug: view-permission
+                    description: View permission details
+                    status: 1
+                    is_assigned: 1
+                  - id: 11
+                    slug: update-permission
+                    description: Assign or revoke permission to role
+                    status: 1
+                    is_assigned: 0
+                  - id: 12
+                    slug: admin-dashboard-access
+                    description: Access to admin dashboard
+                    status: 1
+                    is_assigned: 1
+                  - id: 13
+                    slug: customer-dashboard-access
+                    description: Access to customer dashboard
+                    status: 1
+                    is_assigned: 0
+                  - id: 15
+                    slug: view-role-permissions
+                    description: View permissions assigned to a role
+                    status: 1
+                    is_assigned: 1
+                  - id: 16
+                    slug: update-role-permissions
+                    description: Update permissions assigned to a role
+                    status: 1
+                    is_assigned: 0
+              message: Permissions retrieved successfully
+          schema:
+            type: object
+            properties: {}
+      security: []
+      produces:
+        - application/json
   /api/v1/permissions:
     get:
       summary: Fetch Permissions - Paginated
@@ -800,6 +911,71 @@ paths:
                 - status: '404'
                   title: Not Found
                   detail: Permission not found
+          schema:
+            type: object
+            properties: {}
+      security: []
+      produces:
+        - application/json
+  /api/v1/role/1/permissions/16:
+    post:
+      summary: Assign Role Permission
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: Bearer 10|cJcsV25GgOC4X2xtOl2oM4LuuXGxXZUibypWN4Vc3b4202b0
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          examples:
+            application/json:
+              data: []
+              message: Permission assigned to role successfully
+          schema:
+            type: object
+            properties: {}
+      security: []
+      produces:
+        - application/json
+    delete:
+      summary: Revoke Role Permission
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+        - name: Authorization
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: Bearer 10|cJcsV25GgOC4X2xtOl2oM4LuuXGxXZUibypWN4Vc3b4202b0
+        - name: Accept
+          in: header
+          description: ''
+          required: false
+          type: string
+          x-example: application/json
+      responses:
+        '200':
+          description: ''
+          headers: {}
+          examples:
+            application/json:
+              data: []
+              message: Permission revoked from role successfully
           schema:
             type: object
             properties: {}

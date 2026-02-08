@@ -95,7 +95,9 @@ class User extends Authenticatable
      */
     public function permissions()
     {
-        return $this->roles()->with('permissions')->get()->pluck('permissions')->flatten()->pluck('slug')->unique();
+        return $this->roles()->with(['permissions' => function ($query) {
+            $query->wherePivot('status', PermissionRole::STATUS_ACTIVE);
+        }])->get()->pluck('permissions')->flatten()->pluck('slug')->unique();
     }
 
     /**
