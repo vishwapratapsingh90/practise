@@ -4,6 +4,8 @@ import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Registration from './pages/Registration';
+import ResetPassword from './pages/ResetPassword';
+import PasswordUpdation from './pages/PasswordUpdation';
 import AdminDashboard from './pages/admin/Dashboard';
 import ViewRoles from './pages/admin/ViewRoles';
 import ViewPermissions from './pages/admin/ViewPermissions';
@@ -23,6 +25,8 @@ export const routes = (
         {/* Authentication Routes */}
         <Route path="/login" element={<MainLayout pageTitle={t.login || "Login"}><Login /></MainLayout>} />
         <Route path="/registration" element={<MainLayout pageTitle={t.registration || "Registration"}><Registration /></MainLayout>} />
+        <Route path="/reset-password" element={<MainLayout pageTitle={t.resetPassword || "Reset Password"}><ResetPassword /></MainLayout>} />
+        <Route path="/password-updation" element={<MainLayout pageTitle={t.passwordUpdation || "Update Password"}><PasswordUpdation /></MainLayout>} />
 
         {/* Admin Dashboard Route */}
         <Route path="/admin/dashboard" element={<MainLayout pageTitle={t.adminDashboard || "Admin Dashboard"}><AdminDashboard /></MainLayout>} />
