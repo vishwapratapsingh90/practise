@@ -105,39 +105,39 @@ function Registration() {
     };
 
     const handleSubmit = async (e) => {
-            e.preventDefault();
-            setError('');
-            setErrorField('');
+        e.preventDefault();
+        setError('');
+        setErrorField('');
 
-            if (!validateForm()) {
-                return;
+        if (!validateForm()) {
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            // Get CSRF cookie from Laravel before making registration request
+            await window.axios.get('/sanctum/csrf-cookie');
+
+            const response = await window.axios.post('/api/v1/register', {
+                name: fullname,
+                email,
+                password,
+                password_confirmation: confirmPassword
+            });
+
+            const { token, role, user } = response.data;
+
+            if (response.status === 201 && user) {
+                navigate('/login', { state: { successMessage: 'Registration successful, please login.' } });
             }
 
-            setIsLoading(true);
 
-            try {
-                // Get CSRF cookie from Laravel before making registration request
-                await window.axios.get('/sanctum/csrf-cookie');
-
-                const response = await window.axios.post('/api/v1/register', {
-                    name: fullname,
-                    email,
-                    password,
-                    password_confirmation: confirmPassword
-                });
-
-                const { token, role, user } = response.data;
-
-                if (response.status === 201 && user) {
-                    navigate('/login', { state: { successMessage: 'Registration successful, please login.' } });
-                }
-
-
-            } catch (err) {
-                setError(err.response?.data?.message || 'Registration failed. Please try again.');
-                setIsLoading(false);
-            }
-        };
+        } catch (err) {
+            setError(err.response?.data?.message || 'Registration failed. Please try again.');
+            setIsLoading(false);
+        }
+    };
 
     return (
         <div className={`max-w-md mx-auto my-12 ${theme.classes.p.md} border border-gray-300 rounded-lg ${theme.classes.shadow.md}`}>
